@@ -6,6 +6,7 @@ import morgan from "morgan"
 import connectDB from "./config/dbConnect.js"
 import { globalErrorHandler } from "./middleware/errorHandler.js"
 import V1Router from "./routes/index.js"
+import cookieParser from "cookie-parser"
 
 dotenv.config()
 const mode = process.env.MODE
@@ -40,6 +41,7 @@ const corsOption = {
 app.use(express.json())
 app.use(cors(corsOption))
 app.use(morgan("dev"))
+app.use(cookieParser())
 
 // V1 All Routes
 AppRouter.use("/v1", V1Router)

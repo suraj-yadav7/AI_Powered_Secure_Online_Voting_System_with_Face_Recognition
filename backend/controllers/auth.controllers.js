@@ -1,4 +1,6 @@
 import User from "../models/user.model.js";
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 export const registerUser = async(req, res, next) => {
   try{
@@ -13,12 +15,15 @@ export const registerUser = async(req, res, next) => {
       return res.status(400).json({success:false, message:"User already exist with this email."})
     };
 
+    const salt = await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(password, salt)
+
     const newUser = new User({
       first_name,
       last_name,
       email,
       phone,
-      password,
+      password:hashPassword,
       gender,
       profile_type
     })
@@ -30,10 +35,64 @@ export const registerUser = async(req, res, next) => {
   }
 };
 
-export const loginUser = async(req, res, next) => {
+export const login = async(req, res, next) => {
   try{
-    const {} = req.body
+    const {email_phone, password} = req.body
+    if(!email_phone || !password){
+      return res.status(400).json({success:false, message:"Required valid 'email or phone and password'."})
+    };
+
+    let userExist = ""
+    if(email_phone.includes("@")){
+      userExist = await User.findOne({email:email_phone})
+    }else{
+      userExist = await User.findOne({phone:email_phone})
+    };
+
+    if(!userExist){
+      return res.status(400).json({success:false, message:"User don't exist, Register Please!"})
+    };
+
+    const comparePassword = await bcrypt.compare(password, userExist.password)
+    if(!comparePassword){
+      return res.status(400).json({success:false, message:"Password in Incorrect."})
+    };
+
+    const jwtSecret = process.env.JWT_SECRET
+    const {_id, name, email, profile_type} = userExist
+    const data = {
+      user:{
+        user_id:_id,
+        name,
+        email,
+        cookieExist:true,
+        user_type:profile_type
+      }
+    }
+    const jwtSign = jwt.sign(data, jwtSecret, {expiresIn:"1hr"})
+    res.cookie("JWT_Token", jwtSign, {
+      httpOnly:true,
+      secure:false,
+      sameSite:"lax",
+      maxAge:24*60*60*1000
+    });
+
+    const userData={
+      user_id:_id,
+      name,
+      email
+    }
+    return res.status(200).json({success:true, message:"User logged successfully", data:userData})
   }catch(error){
     next(error)
   }
-}
+};
+
+export const validateCookie = async(req, res, next) => {
+  try{
+    const {user} = req
+    return res.status(200).json({success:true, message:"Valid Cookies.", data:user})
+  }catch(error){
+    next(error)
+  }
+};
