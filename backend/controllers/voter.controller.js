@@ -1,5 +1,6 @@
 import { payloadChecker } from "../middleware/payloadChecker.js";
 import Voter from "../models/voter.model.js";
+import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 
 export const registerVoter = async(req, res, next) =>{
   try{
@@ -22,6 +23,56 @@ export const registerVoter = async(req, res, next) =>{
     })
     await newVoter.save()
     return res.status(200).json({success:true, message:"Voter Profile Created Successfully.", data:newVoter})
+  }catch(error){
+    next(error)
+  }
+};
+
+
+export const updateVoter = async(req, res, next) =>{
+  try{
+    const {id} = req.body
+    console.log("Update object: ", req.body)
+    if(!id){
+      return res.status(400).json({success:false, message:"Required valid 'id'."})
+    };
+
+    const recordCheck = await Voter.findById(id)
+    if(!recordCheck){
+      return res.status(404).json({success:false, message:"Voter Record Not Found."})
+    };
+
+    if(recordCheck.isDeleted || !recordCheck.approved){
+      return res.status(400).json({success:false,
+        message:"Not allowed to update because either it's 'Deleted' or 'Not Approved'."})
+    };
+
+    const updObjSanRes = objSanitizeflatten(req.body)
+    console.log("Update Object: ", updObjSanRes)
+    const updateRecord = await Voter.findByIdAndUpdate(id,
+      {$set:{...updObjSanRes}}, {new:true, runValidators:true})
+
+    return res.status(200).json({success:true, message:"Voter Record Updated Successfully.", data:updateRecord})
+  }catch(error){
+    next(error)
+  }
+};
+
+export const deleteVoter = async(req, res, next) => {
+  try{
+    const {id} = req.query
+    if(!id){
+      return res.status(400).json({success:false, message:"Required valid 'id'."})
+    };
+
+    const deleteRecord = await Voter.findByIdAndUpdate(id,
+      {$set:{isDeleted:true}}, {new:true, runValidators:true})
+
+    if(!deleteRecord){
+      return res.status(404).json({success:false, message:"Record Not Found."})
+    };
+
+    return res.status(200).json({status:false, message:"Voter Record Deleted Successfully.", data:deleteRecord})
   }catch(error){
     next(error)
   }

@@ -80,6 +80,14 @@ const voterSchema = new mongoose.Schema({
   },
   face_recognition:{
     type:String
+  },
+  isDeleted:{
+    type:Boolean,
+    default:false
+  },
+  approved:{
+    type:Boolean,
+    default:false
   }
 })
 
