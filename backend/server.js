@@ -16,6 +16,7 @@ const clientUrl = process.env.CLIENT_URL
 const app = express()
 const AppRouter = express.Router()
 
+/** Connect to Mongodb */
 connectDB()
 .then((success) => {
     console.log(`Successfully Mongodb Connected: ${success}`.bgGreen.white)
@@ -38,16 +39,17 @@ const corsOption = {
   optionSuccessStatus:200
 };
 
+/** Packages Initialization */
 app.use(express.json())
 app.use(cors(corsOption))
 app.use(morgan("dev"))
 app.use(cookieParser())
 
-// V1 All Routes
+/** V1 All Routes */
 AppRouter.use("/v1", V1Router)
 app.use("/api", AppRouter)
 
-
+/** Global Error Handler */
 app.use(globalErrorHandler)
 
 app.use((req, res)=>{

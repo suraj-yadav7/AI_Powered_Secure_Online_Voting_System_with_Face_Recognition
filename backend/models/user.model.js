@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
   },
   profile_type:{
     type:String,
-    enum:["user", "admin", "checker"],
+    enum:["user", "admin"],
     default:"user"
   }
 }, {timestamps:true})

@@ -2,6 +2,8 @@ import { payloadChecker } from "../middleware/payloadChecker.js";
 import Voter from "../models/voter.model.js";
 import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 
+/** ##################################################################################################################### */
+/** Register New Voter */
 export const registerVoter = async(req, res, next) =>{
   try{
     const {aadhar_number} = req.body
@@ -28,7 +30,8 @@ export const registerVoter = async(req, res, next) =>{
   }
 };
 
-
+/** ##################################################################################################################### */
+/** Update Existing Voter  */
 export const updateVoter = async(req, res, next) =>{
   try{
     const {id} = req.body
@@ -58,6 +61,8 @@ export const updateVoter = async(req, res, next) =>{
   }
 };
 
+/** ##################################################################################################################### */
+/** Delete Existing Voter */
 export const deleteVoter = async(req, res, next) => {
   try{
     const {id} = req.query
@@ -72,7 +77,7 @@ export const deleteVoter = async(req, res, next) => {
       return res.status(404).json({success:false, message:"Record Not Found."})
     };
 
-    return res.status(200).json({status:false, message:"Voter Record Deleted Successfully.", data:deleteRecord})
+    return res.status(200).json({success:false, message:"Voter Record Deleted Successfully.", data:deleteRecord})
   }catch(error){
     next(error)
   }
