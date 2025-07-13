@@ -3,10 +3,10 @@ import cors from "cors"
 import dotenv from "dotenv"
 import colors from "colors"
 import morgan from "morgan"
-import connectDB from "./config/dbConnect.js"
-import { globalErrorHandler } from "./middleware/errorHandler.js"
-import V1Router from "./routes/index.js"
 import cookieParser from "cookie-parser"
+import connectDB from "./config/dbConnect.js"
+import V1Router from "./routes/index.js"
+import { globalErrorHandler } from "./middleware/errorHandler.js"
 
 dotenv.config()
 const mode = process.env.MODE

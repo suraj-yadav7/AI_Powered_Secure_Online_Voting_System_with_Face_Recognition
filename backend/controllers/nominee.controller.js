@@ -40,7 +40,7 @@ export const updateNominee = async(req, res, next) =>{
 
     const recordCheck = await Nominee.findById(id)
     if(!recordCheck){
-      return res.status(404).json({success:false, message:"Voter Record Not Found."})
+      return res.status(404).json({success:false, message:"Nominee Record Not Found."})
     };
 
     const updObjSanRes = objSanitizeflatten(req.body)

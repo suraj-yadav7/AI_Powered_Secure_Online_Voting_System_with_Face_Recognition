@@ -3,8 +3,8 @@ import { createNominee, deleteNominee, updateNominee } from "../controllers/nomi
 
 const NomineeRouter = express.Router()
 
-NomineeRouter.post("/create", createNominee)
-NomineeRouter.put("/update", updateNominee)
+NomineeRouter.post("/create",   createNominee)
+NomineeRouter.put("/update",    updateNominee)
 NomineeRouter.delete("/delete", deleteNominee)
 
 export default NomineeRouter
