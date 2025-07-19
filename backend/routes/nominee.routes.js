@@ -7,5 +7,4 @@ NomineeRouter.post("/create",   createNominee)
 NomineeRouter.put("/update",    updateNominee)
 NomineeRouter.delete("/delete", deleteNominee)
 
-export default NomineeRouter
-
+export default NomineeRouter;

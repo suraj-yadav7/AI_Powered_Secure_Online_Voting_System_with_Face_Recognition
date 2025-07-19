@@ -27,7 +27,6 @@ export const createElection = async(req, res, next) => {
   }
 };
 
-
 /** ##################################################################################################################### */
 /** Update Election Details */
 export const updateElection = async(req, res, next) =>{

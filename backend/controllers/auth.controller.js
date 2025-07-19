@@ -2,6 +2,8 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
+/** ##################################################################################################################### */
+/** Register */
 export const registerUser = async(req, res, next) => {
   try{
     const {first_name, last_name, email, phone, password, gender, profile_type}  = req.body
@@ -35,6 +37,8 @@ export const registerUser = async(req, res, next) => {
   }
 };
 
+/** ##################################################################################################################### */
+/** Login */
 export const login = async(req, res, next) => {
   try{
     const {email_phone, password} = req.body
@@ -69,12 +73,13 @@ export const login = async(req, res, next) => {
         user_type:profile_type
       }
     }
-    const jwtSign = jwt.sign(data, jwtSecret, {expiresIn:"1hr"})
+    const jwtSign = jwt.sign(data, jwtSecret, {expiresIn:"2hr"})
     res.cookie("JWT_Token", jwtSign, {
-      httpOnly:true,
+      httpOnly:false,
       secure:false,
       sameSite:"lax",
-      maxAge:24*60*60*1000
+      maxAge:2*60*60*1000,
+      path:"/"
     });
 
     const userData={
@@ -88,10 +93,29 @@ export const login = async(req, res, next) => {
   }
 };
 
+/** ##################################################################################################################### */
+/** Validate Cookies */
 export const validateCookie = async(req, res, next) => {
   try{
     const {user} = req
     return res.status(200).json({success:true, message:"Valid Cookies.", data:user})
+  }catch(error){
+    next(error)
+  }
+};
+
+/** ##################################################################################################################### */
+/** Logout */
+export const logout = async(req, res, next) => {
+  try{
+    res.clearCookie("JWT_Token",
+      {
+        httpOnly:false,
+        secure:false,
+        sameSite:"lax",
+        path:"/"
+      })
+    return res.status(200).json({success:false, message:"User Logged-Out successfully."})
   }catch(error){
     next(error)
   }

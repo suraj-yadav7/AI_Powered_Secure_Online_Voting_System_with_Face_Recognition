@@ -88,6 +88,10 @@ const voterSchema = new mongoose.Schema({
   approved:{
     type:Boolean,
     default:false
+  },
+  casted_vote:{
+    type:Boolean,
+    default:false
   }
 })
 
