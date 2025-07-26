@@ -1,15 +1,20 @@
 import React from "react";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "./App.css"
-import Home from "./components/Home";
+import Home from "./components/pages/Home";
+import Login from "./components/pages/Login";
+import Signup from "./components/pages/Signup";
+import { Toaster } from "react-hot-toast";
 
 const App = () =>{
   return (
     <>
-    <div className="bg-red-400">AI Powered Online voting system.</div>
+    <Toaster/>
     <Router>
       <Routes>
-        <Route path="/home" element={<Home/>}/>
+        <Route path="/"   element={<Home/>}/>
+        <Route path="/login"  element={<Login/>}/>
+        <Route path="/signup"  element={<Signup/>}/>
       </Routes>
     </Router>
     </>

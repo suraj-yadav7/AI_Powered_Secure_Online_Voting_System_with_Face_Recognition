@@ -1,6 +1,6 @@
-import Voter    from "../models/voter.model";
-import Nominee  from "../models/nominee.model";
-import Election from "../models/election.model";
+import Voter    from "../models/voter.model.js";
+import Nominee  from "../models/nominee.model.js";
+import Election from "../models/election.model.js";
 
 /** ##################################################################################################################### */
 /** Caste Vote */
