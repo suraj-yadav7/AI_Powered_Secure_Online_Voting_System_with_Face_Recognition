@@ -7,7 +7,7 @@ import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 export const registerVoter = async(req, res, next) =>{
   try{
     const {aadhar_number} = req.body
-
+    console.log("req.body: ", req.body)
     const checkPayload = payloadChecker(req.body)
     if(checkPayload){
       return res.status(400).json({status:false,

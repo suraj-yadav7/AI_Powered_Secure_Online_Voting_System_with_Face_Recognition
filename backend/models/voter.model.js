@@ -93,7 +93,7 @@ const voterSchema = new mongoose.Schema({
     type:Boolean,
     default:false
   }
-})
+}, {timestamps:true})
 
 const Voter = mongoose.model("voter", voterSchema)
 

@@ -18,7 +18,7 @@ const nomineeSchema = new mongoose.Schema({
     type:Number,
     default:0
   }
-})
+}, {timestamps:true})
 
 const Nominee = mongoose.model("nominee", nomineeSchema)
 export default Nominee;
