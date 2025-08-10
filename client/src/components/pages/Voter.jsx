@@ -54,7 +54,7 @@ const Voter = () => {
     e.preventDefault()
     try{
       console.log("final data: ", {voterData, addressData})
-      const response = await axios.post(api.voter_register, {...voterData, address:addressData})
+      const response = await axios.post(api.voter_register  , {...voterData, address:addressData})
       const {data} = response
       if(!data){
         toast.error("No valid response")

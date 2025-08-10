@@ -1,69 +1,267 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
+import React from 'react';
+import { Vote, UserPlus, BarChart3, Shield, Brain, CheckCircle, ArrowRight, Users, Lock, Zap } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import Header from './Header';
 import Footer from './Footer';
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 const Home = () => {
   return (
     <>
-    {/* Header Component */}
-      <div className='header flex justify-center items-center h-12 border'>
-        <Header/>
-      </div>
+      <div className='px-12 bg-background'>
+        <div className="min-h-screen  ">
+          {/* Header Section */}
+          <Header />
 
-      {/* Body Component */}
-      <div className='h-[70vh]'>
-        <div className='flex justify-center items-center gap-20 h-full pb-20'>
-          <Card className="w-full max-w-md">
-            <img
-              src="https://cdn.pixabay.com/photo/2020/10/22/16/41/vote-5676562_1280.jpg"
-              alt="Voting Illustration"
-              className="w-full h-48 object-cover rounded-t-md"
-            />
-            <CardHeader>
-              <CardTitle>New User</CardTitle>
-              <CardDescription>
-                First-time users should register to vote through a secure process.
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="flex justify-center">
-              <Button>Register</Button>
-            </CardFooter>
-          </Card>
+          {/* Hero Section */}
+          <section className="border-1 rounded-2xl space-y-6 py-4 md:py-12 lg:py-32">
+            <div className=" mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+              <div className="rounded-2xl bg-muted p-4">
+                <Brain className="h-16 w-16" />
+              </div>
+              <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+                AI-Powered Online Voting System
+              </h1>
+              <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+                Secure, transparent, and intelligent democratic participation. Experience the future of voting
+                with advanced AI verification, real-time results, and uncompromising security.
+              </p>
+              {/* <div className="space-x-4">
+                <Button size="lg">
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="lg">
+                  Learn More
+                </Button>
+              </div> */}
+            </div>
+          </section>
 
-          <Card className="w-full max-w-md ">
-            <CardHeader>
-              <CardTitle>Election</CardTitle>
-              <CardDescription>
-                See different types of election in the country.
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="flex justify-center">
-              <Button>Know More</Button>
-            </CardFooter>
-          </Card>
+          {/* Main Features */}
+          <section id="features" className=" space-y-6 bg-slate-50 py-8 dark:bg-transparent md:py-12 lg:py-24">
+            <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+              <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+                Complete Voting Solution
+              </h2>
+              <p className="max-w-[85rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+                Everything you need for secure, modern elections
+              </p>
+            </div>
+            
+            <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+              {/* New Voter Registration */}
+              <Card className="relative overflow-hidden">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+                  <div className="space-y-2">
+                    <UserPlus className="h-12 w-12 text-green-600" />
+                    <h3 className="font-bold">New Voter Registration</h3>
+                    <p className="text-sm text-muted-foreground">
+                      AI-powered identity verification ensures secure voter registration with real-time document validation.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Election Result</CardTitle>
-              <CardDescription>
-                See election result of all recent elections.
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="flex justify-center">
-              <Button>Know More</Button>
-            </CardFooter>
-          </Card>
+              {/* Election Management */}
+              <Card className="relative overflow-hidden">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+                  <div className="space-y-2">
+                    <Vote className="h-12 w-12 text-blue-600" />
+                    <h3 className="font-bold">Election Platform</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Secure voting experience with AI-powered fraud prevention and blockchain-verified integrity.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Results & Analytics */}
+              <Card className="relative overflow-hidden">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+                  <div className="space-y-2">
+                    <BarChart3 className="h-12 w-12 text-purple-600" />
+                    <h3 className="font-bold">Results & Analytics</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Real-time result tracking with AI-powered analytics and comprehensive reporting.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Feature Details */}
+            <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+              {/* Registration Details */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="rounded-lg bg-green-100 p-3 dark:bg-green-900">
+                      <UserPlus className="h-6 w-6 text-green-600" />
+                    </div>
+                    <h3 className="font-semibold">Registration Features</h3>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                        Instant ID verification
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                        Document authenticity check
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                        Automated eligibility validation
+                      </li>
+                    </ul>
+                    <Button className="w-full" variant="default">
+                      Register Now
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Election Details */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
+                      <Vote className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <h3 className="font-semibold">Election Features</h3>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-blue-500" />
+                        End-to-end encryption
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-blue-500" />
+                        Real-time fraud detection
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-blue-500" />
+                        Audit trail transparency
+                      </li>
+                    </ul>
+                    <Button className="w-full" variant="default">
+                      Start Voting
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Results Details */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
+                      <BarChart3 className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold">Analytics Features</h3>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-purple-500" />
+                        Live result updates
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-purple-500" />
+                        Advanced analytics
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-purple-500" />
+                        Detailed reporting
+                      </li>
+                    </ul>
+                    <Button className="w-full" variant="default">
+                      View Results
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* Security Section */}
+          <section id="security" className=" py-8 md:py-12 lg:py-24">
+            <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+              <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+                Uncompromising Security
+              </h2>
+              <p className="max-w-[85rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+                Our AI-powered security infrastructure ensures the highest levels of election integrity.
+              </p>
+            </div>
+
+            <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3 mt-8">
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6">
+                  <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                    <Shield className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <div className="space-y-2 text-center">
+                    <h3 className="font-semibold">Advanced Encryption</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Military-grade encryption protects every vote and voter identity
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6">
+                  <div className="rounded-full bg-green-100 p-3 dark:bg-green-900">
+                    <Lock className="h-8 w-8 text-green-600" />
+                  </div>
+                  <div className="space-y-2 text-center">
+                    <h3 className="font-semibold">Advance Cloud Security</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Real-time monitoring prevents manipulation and ensures authenticity
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6">
+                  <div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
+                    <Zap className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <div className="space-y-2 text-center">
+                    <h3 className="font-semibold">Blockchain Verification</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Immutable ledger technology guarantees result integrity
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* CTA Section */}
+          <section className=" py-8 md:py-12 lg:py-24">
+            <Card className="relative overflow-hidden">
+              <CardContent className="p-8 md:p-12">
+                <div className="relative z-10 flex flex-col items-center space-y-4 text-center">
+                  <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+                    Ready to Transform Democracy?
+                  </h2>
+                  <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+                    Join the future of secure, transparent, and intelligent voting systems.
+                  </p>
+                  <Button size="lg" className="mt-4">
+                    Start Your Election Today
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
         </div>
-      </div>
-
-      {/* Footer Component */}
-      <div className='header flex justify-center items-center h-12 border'>
-        <Footer/>
+        <Footer />
       </div>
     </>
-  )
-};
+  );
+}
 
-export default Home;
+export default Home

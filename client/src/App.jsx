@@ -1,11 +1,11 @@
 import React from "react";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "./App.css"
-import Home from "./components/pages/Home";
 import Login from "./components/pages/Login";
 import Signup from "./components/pages/Signup";
 import { Toaster } from "react-hot-toast";
 import Voter from "./components/pages/Voter";
+import Home from "./components/pages/Home";
 
 const App = () =>{
   return (
