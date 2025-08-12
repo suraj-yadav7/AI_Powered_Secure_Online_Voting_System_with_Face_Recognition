@@ -6,6 +6,8 @@ import Signup from "./components/pages/Signup";
 import { Toaster } from "react-hot-toast";
 import Voter from "./components/pages/Voter";
 import Home from "./components/pages/Home";
+import UserProfile from "./components/pages/UserProfile";
+import VoterProfilePage from "./components/pages/VoterProfile";
 
 const App = () =>{
   return (
@@ -17,6 +19,8 @@ const App = () =>{
         <Route path="/login"    element={<Login/>}/>
         <Route path="/signup"   element={<Signup/>}/>
         <Route path="/voter"    element={<Voter/>}/>
+        <Route path="/user-profile"  element={<UserProfile/>}/>
+        <Route path="/voter-profile"  element={<VoterProfilePage/>}/>
       </Routes>
     </Router>
     </>
