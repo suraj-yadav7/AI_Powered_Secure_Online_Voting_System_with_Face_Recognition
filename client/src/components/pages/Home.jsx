@@ -11,9 +11,6 @@ const Home = () => {
     <>
       <div className='px-12 bg-background'>
         <div className="min-h-screen  ">
-          {/* Header Section */}
-          <Header />
-
           {/* Hero Section */}
           <section className="border-1 rounded-2xl space-y-6 py-4 md:py-12 lg:py-32">
             <div className=" mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
@@ -49,7 +46,7 @@ const Home = () => {
                 Everything you need for secure, modern elections
               </p>
             </div>
-            
+
             <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
               {/* New Voter Registration */}
               <Card className="relative overflow-hidden">

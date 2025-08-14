@@ -44,9 +44,10 @@ export default function UserProfile() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 mt-3">
+        <h3 className='text-2xl font-semibold mb-3 text-center'>USER PROFILE</h3>
         {/* Page Header */}
-                <Card className="bg-gradient-to-r from-black via-gray-600 to-black text-yellow-300 border-0">
+        <Card className="bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 text-white border-0">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">

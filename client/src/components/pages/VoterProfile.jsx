@@ -59,10 +59,11 @@ const VoterProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 py-4 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        <h3 className='text-2xl font-semibold mb-4 text-center'>VOTER PROFILE</h3>
         {/* Header Section */}
-        <Card className="bg-gradient-to-r from-black via-gray-600 to-black text-yellow-300 border-0">
+        <Card className="bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 text-white border-0">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
