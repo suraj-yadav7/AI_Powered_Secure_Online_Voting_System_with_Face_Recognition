@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Mail, Phone, MapPin, Calendar, Shield, Edit, Save, X } from "lucide-react";
 
-const VoterProfilePage = () => {
+const VoterProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     firstName: "John",
@@ -397,4 +397,4 @@ const VoterProfilePage = () => {
   );
 };
 
-export default VoterProfilePage;
+export default VoterProfile;

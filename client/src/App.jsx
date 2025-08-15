@@ -1,16 +1,20 @@
 import React from "react";
+import { Toaster } from "react-hot-toast";
+import Home   from "./components/pages/Home";
+import User   from "./components/pages/User";
+import Voter  from "./components/pages/Voter";
+import Login  from "./components/pages/Login";
+import Header from "./components/pages/Header";
+import Signup from "./components/pages/Signup";
+import Nominee  from "./components/pages/Nominee";
+import Election from "./components/pages/Election";
+import UserProfile    from "./components/pages/UserProfile";
+import UserApproval   from "./components/pages/UserApproval";
+import VoterApproval  from "./components/pages/VoterApproval";
+import VoterProfile   from "./components/pages/VoterProfile";
+import VoterRegistration  from "./components/pages/VoterRegistration";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "./App.css"
-import Login from "./components/pages/Login";
-import Signup from "./components/pages/Signup";
-import { Toaster } from "react-hot-toast";
-import Voter from "./components/pages/Voter";
-import Home from "./components/pages/Home";
-import UserProfile from "./components/pages/UserProfile";
-import VoterProfilePage from "./components/pages/VoterProfile";
-import Nominee from "./components/pages/Nominee";
-import Election from "./components/pages/Election";
-import Header from "./components/pages/Header";
 
 
 const App = () =>{
@@ -21,14 +25,18 @@ const App = () =>{
     <Header />
     <Router>
       <Routes>
-        <Route path="/"         element={<Home/>}/>
-        <Route path="/login"    element={<Login/>}/>
-        <Route path="/signup"   element={<Signup/>}/>
-        <Route path="/voter"    element={<Voter/>}/>
-        <Route path="/nominee"  element={<Nominee/>}/>
-        <Route path="/election" element={<Election/>}/>
-        <Route path="/user-profile"   element={<UserProfile/>}/>
-        <Route path="/voter-profile"  element={<VoterProfilePage/>}/>
+        <Route path="/"           element={<Home/>}/>
+        <Route path="/login"      element={<Login/>}/>
+        <Route path="/signup"     element={<Signup/>}/>
+        <Route path="/user"       element={<User/>}/>
+        <Route path="/voter"      element={<Voter/>}/>
+        <Route path="/nominee"    element={<Nominee/>}/>
+        <Route path="/election"   element={<Election/>}/>
+        <Route path="/user-profile"     element={<UserProfile/>}/>
+        <Route path="/voter-profile"    element={<VoterProfile/>}/>
+        <Route path="/user-approval"    element={<UserApproval/>}/>
+        <Route path="/voter-approval"   element={<VoterApproval/>}/>
+        <Route path="/voter-register"   element={<VoterRegistration/>}/>
       </Routes>
     </Router>
     </>
