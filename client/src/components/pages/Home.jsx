@@ -1,5 +1,6 @@
 import React from 'react';
-import { Vote, UserPlus, BarChart3, Shield, Brain, CheckCircle, ArrowRight, Users, Lock, Zap } from 'lucide-react';
+import { Vote, UserPlus, BarChart3, Brain, CheckCircle,
+  ArrowRight, Users, Lock, Zap, Shield, UserCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -232,6 +233,40 @@ const Home = () => {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </section>
+
+          {/* How it Works Section */}
+          <section id="how-it-works" className="py-20 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                <p className="text-xl text-gray-600">Simple steps to make your voice heard</p>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {[
+                  { step: "01", title: "Sign Up", desc: "Create your account with basic information", icon: UserCheck },
+                  { step: "02", title: "Verify Identity", desc: "Submit required documents for verification", icon: Shield },
+                  { step: "03", title: "Get Approved", desc: "Wait for admin approval (2-3 business days)", icon: CheckCircle },
+                  { step: "04", title: "Start Voting", desc: "Participate in polls and community decisions", icon: Vote }
+                ].map((item, index) => (
+                  <div key={index} className="text-center">
+                    <div className="relative mb-8">
+                      <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <item.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-sm">{item.step}</span>
+                      </div>
+                      {index < 3 && (
+                        <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                    <p className="text-gray-600">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
 

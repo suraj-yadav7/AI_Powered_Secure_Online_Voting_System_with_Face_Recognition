@@ -12,9 +12,11 @@ import UserProfile    from "./components/pages/UserProfile";
 import UserApproval   from "./components/pages/UserApproval";
 import VoterApproval  from "./components/pages/VoterApproval";
 import VoterProfile   from "./components/pages/VoterProfile";
+import AdminDashboard from "./components/pages/AdminDashboard";
 import VoterRegistration  from "./components/pages/VoterRegistration";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "./App.css"
+import UserDashboard from "./components/pages/UserDashboard";
 
 
 const App = () =>{
@@ -37,6 +39,8 @@ const App = () =>{
         <Route path="/user-approval"    element={<UserApproval/>}/>
         <Route path="/voter-approval"   element={<VoterApproval/>}/>
         <Route path="/voter-register"   element={<VoterRegistration/>}/>
+        <Route path="/admin-dashboard"  element={<AdminDashboard/>}/>
+        <Route path="/user-dashboard"   element={<UserDashboard/>}/>
       </Routes>
     </Router>
     </>

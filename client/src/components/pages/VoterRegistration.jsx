@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { api } from "@/utils/endpointUrls"
 import { useState } from "react"
 
-const Voter = () => {
+const VoterRegistration = () => {
   const [voterData, setVoterData] = useState({
     first_name:"",
     last_name:"",
@@ -243,4 +243,4 @@ const Voter = () => {
   )
 };
 
-export default Voter
+export default VoterRegistration
