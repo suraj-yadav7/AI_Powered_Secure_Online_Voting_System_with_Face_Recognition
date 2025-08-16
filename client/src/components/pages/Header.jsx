@@ -13,8 +13,10 @@ const Header = ()=>{
             <div className=" flex h-14 items-center">
               <div className="mr-4 flex">
                 <div className="mr-6 flex items-center space-x-2">
-                  <Vote className="h-6 w-6" />
-                  <span className="hidden font-bold sm:inline-block">
+                  <div className="bg-black p-1 px-2 rounded-md">
+                    <Vote className="text-white" size={30} />
+                  </div>
+                  <span className="hidden font-bold sm:inline-block text-lg">
                     AI-POWERED ONLINE VOTING SYSTEM
                   </span>
                 </div>

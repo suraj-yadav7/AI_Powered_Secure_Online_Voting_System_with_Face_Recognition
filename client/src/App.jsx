@@ -17,6 +17,8 @@ import VoterRegistration  from "./components/pages/VoterRegistration";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "./App.css"
 import UserDashboard from "./components/pages/UserDashboard";
+import Voting from "./components/pages/Voting";
+import Results from "./components/pages/Results";
 
 
 const App = () =>{
@@ -32,6 +34,8 @@ const App = () =>{
         <Route path="/signup"     element={<Signup/>}/>
         <Route path="/user"       element={<User/>}/>
         <Route path="/voter"      element={<Voter/>}/>
+        <Route path="/voting"     element={<Voting/>}/>
+        <Route path="/result"     element={<Results/>}/>
         <Route path="/nominee"    element={<Nominee/>}/>
         <Route path="/election"   element={<Election/>}/>
         <Route path="/user-profile"     element={<UserProfile/>}/>
