@@ -13,24 +13,32 @@ const Nominee = () => {
   const [nominees, setNominees] = useState([
     {
       _id: "1",
-      full_name: "John Smith",
-      political_party: "Democratic",
+      full_name: "Dr. Rajesh Kumar",
+      political_party: "Progressive Party",
       constituency: "District 1",
       votes_count: 1250,
       createdAt: "2024-01-15T10:30:00Z"
     },
     {
       _id: "2",
-      full_name: "Sarah Johnson",
-      political_party: "Republican",
+      full_name: "Priya Sharma",
+      political_party: "Unity Alliance",
       constituency: "District 2", 
       votes_count: 980,
       createdAt: "2024-01-16T14:20:00Z"
     },
     {
       _id: "3",
-      full_name: "Michael Brown",
-      political_party: "Independent",
+      full_name: "Mohammad Ali Khan",
+      political_party: "Development Front",
+      constituency: "District 1",
+      votes_count: 750,
+      createdAt: "2024-01-17T09:15:00Z"
+    },
+        {
+      _id: "4",
+      full_name: "Sunita Devi",
+      political_party: "People's Voice",
       constituency: "District 1",
       votes_count: 750,
       createdAt: "2024-01-17T09:15:00Z"

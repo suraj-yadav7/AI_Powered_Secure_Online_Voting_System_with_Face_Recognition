@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserCheck, UserX, Users, CheckCircle, XCircle, Search, Edit, Trash2, Eye, MapPin, Phone, Mail, Calendar, Award, AlertTriangle, Shield } from "lucide-react";
 
-const AdminVoterManagement = () => {
+const Voter = () => {
   const [voters, setVoters] = useState([
     {
       _id: "1",
@@ -44,13 +44,13 @@ const AdminVoterManagement = () => {
     },
     {
       _id: "2",
-      first_name: "Priya",
-      last_name: "Sharma",
+      first_name: "Sakshi",
+      last_name: "Mishra",
       date_of_birth: "1990-03-22",
       gender: "female",
-      phone: 9876543211,
+      phone: 9123456789,
       aadhar_number: 123456789013,
-      email: "priya.sharma@email.com",
+      email: "sakshi@gmail.com",
       address: {
         house_no: "45-2-78",
         locality: "Jubilee Hills",
@@ -73,13 +73,13 @@ const AdminVoterManagement = () => {
     },
     {
       _id: "3",
-      first_name: "Arjun",
+      first_name: "Satvik",
       last_name: "Reddy",
       date_of_birth: "1978-12-08",
       gender: "male",
       phone: 9876543212,
       aadhar_number: 123456789014,
-      email: "arjun.reddy@email.com",
+      email: "Satvik@email.com",
       address: {
         house_no: "78-9-12",
         locality: "Banjara Hills",
@@ -92,7 +92,7 @@ const AdminVoterManagement = () => {
       },
       constituency: "Banjara Hills",
       occupation: "Business Owner",
-      highest_qualification: "MBA",
+      highest_qualification: "MCA",
       face_recognition: "face_arjun_003.jpg",
       isDeleted: false,
       approved: true,
@@ -102,13 +102,13 @@ const AdminVoterManagement = () => {
     },
     {
       _id: "4",
-      first_name: "Lakshmi",
-      last_name: "Devi",
+      first_name: "Navya",
+      last_name: "Goud",
       date_of_birth: "1995-09-30",
       gender: "female",
-      phone: 9876543213,
+      phone: 9113456799,
       aadhar_number: 123456789015,
-      email: "lakshmi.devi@email.com",
+      email: "navya@email.com",
       address: {
         house_no: "23-5-67",
         locality: "Kukatpally",
@@ -121,11 +121,69 @@ const AdminVoterManagement = () => {
       },
       constituency: "Kukatpally",
       occupation: "Nurse",
-      highest_qualification: "BSc Nursing",
+      highest_qualification: "BSc Electronics",
       face_recognition: "",
       isDeleted: true,
       approved: false,
       casted_vote: false,
+      createdAt: "2024-01-18T13:45:00Z",
+      updatedAt: "2024-01-21T11:30:00Z"
+    },
+    {
+      _id: "5",
+      first_name: "Amjad",
+      last_name: "Pasha",
+      date_of_birth: "1998-09-30",
+      gender: "male",
+      phone: 9213456799,
+      aadhar_number: 123456789015,
+      email: "amjad@email.com",
+      address: {
+        house_no: "23-5-67",
+        locality: "Kukatpally",
+        landmark: "Bus Stop",
+        mandal: "Kukatpally",
+        district: "Hyderabad",
+        city: "Hyderabad",
+        state: "Telangana",
+        pincode: "500072"
+      },
+      constituency: "Kukatpally",
+      occupation: "Nurse",
+      highest_qualification: "B.TECH (ECE)",
+      face_recognition: "",
+      isDeleted: true,
+      approved: false,
+      casted_vote: false,
+      createdAt: "2024-01-18T13:45:00Z",
+      updatedAt: "2024-01-21T11:30:00Z"
+    },
+    {
+      _id: "6",
+      first_name: "Joseph",
+      last_name: "Jude",
+      date_of_birth: "1998-09-30",
+      gender: "male",
+      phone: 9113456799,
+      aadhar_number: 123456789015,
+      email: "joseph@email.com",
+      address: {
+        house_no: "23-5-67",
+        locality: "Nampally",
+        landmark: "Bus Stop",
+        mandal: "Nampally",
+        district: "Hyderabad",
+        city: "Hyderabad",
+        state: "Telangana",
+        pincode: "500072"
+      },
+      constituency: "Nampally",
+      occupation: "Doctor",
+      highest_qualification: "MBBS",
+      face_recognition: "joseph.jpg",
+      isDeleted: false,
+      approved: true,
+      casted_vote: true,
       createdAt: "2024-01-18T13:45:00Z",
       updatedAt: "2024-01-21T11:30:00Z"
     }
@@ -219,6 +277,31 @@ const AdminVoterManagement = () => {
     return age;
   };
 
+
+    const getVoters = async()=>{
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=voter`)
+      if(!response.data){
+        toast.error("No Valid Response.")
+        return
+      };
+
+      const {data, message} = response.data
+      if(data?.length<1){
+        toast.error("No User Record Found.")
+        return
+      }
+      toast.success(message)
+      setVoters(data)
+    }catch(error){
+      console.log("Error occured while fetching user: ", error)
+    }
+  };
+
+  useEffect(() => {
+    getVoters()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -241,6 +324,81 @@ const AdminVoterManagement = () => {
             </AlertDescription>
           </Alert>
         )}
+
+                {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-100">Total Voters</p>
+                  <p className="text-2xl font-bold">{voters.length}</p>
+                </div>
+                <Users className="w-8 h-8 text-blue-200" />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-100">Approved</p>
+                  <p className="text-2xl font-bold">{voters.filter(v => v.approved && !v.isDeleted).length}</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-yellow-100">Pending</p>
+                  <p className="text-2xl font-bold">{voters.filter(v => !v.approved && !v.isDeleted).length}</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-yellow-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-emerald-100">Voted</p>
+                  <p className="text-2xl font-bold">{voters.filter(v => v.casted_vote && !v.isDeleted).length}</p>
+                </div>
+                <Award className="w-8 h-8 text-emerald-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-100">Face Recognition</p>
+                  <p className="text-2xl font-bold">{voters.filter(v => v.face_recognition && !v.isDeleted).length}</p>
+                </div>
+                <Shield className="w-8 h-8 text-purple-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-red-100">Deleted</p>
+                  <p className="text-2xl font-bold">{voters.filter(v => v.isDeleted).length}</p>
+                </div>
+                <Trash2 className="w-8 h-8 text-red-200" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Filters */}
         <Card className="border-l-4 border-l-blue-500">
@@ -484,80 +642,6 @@ const AdminVoterManagement = () => {
           </CardContent>
         </Card>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100">Total Voters</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => !v.isDeleted).length}</p>
-                </div>
-                <Users className="w-8 h-8 text-blue-200" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100">Approved</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => v.approved && !v.isDeleted).length}</p>
-                </div>
-                <CheckCircle className="w-8 h-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-yellow-100">Pending</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => !v.approved && !v.isDeleted).length}</p>
-                </div>
-                <AlertTriangle className="w-8 h-8 text-yellow-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-emerald-100">Voted</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => v.casted_vote && !v.isDeleted).length}</p>
-                </div>
-                <Award className="w-8 h-8 text-emerald-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100">Face Recognition</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => v.face_recognition && !v.isDeleted).length}</p>
-                </div>
-                <Shield className="w-8 h-8 text-purple-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-red-100">Deleted</p>
-                  <p className="text-2xl font-bold">{voters.filter(v => v.isDeleted).length}</p>
-                </div>
-                <Trash2 className="w-8 h-8 text-red-200" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Voter Details Modal (placeholder) */}
         {selectedVoter && (
@@ -622,4 +706,4 @@ const AdminVoterManagement = () => {
   );
 };
 
-export default AdminVoterManagement;
+export default Voter;

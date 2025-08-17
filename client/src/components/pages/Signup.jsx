@@ -51,11 +51,11 @@ export default function Signup() {
 
   return (
     <>
-      <div className="text-center py-4">
-        <h3 className="text-2xl font-extrabold">AI - POWERED ONLINE VOTING SYSTEM</h3>
+    <div className="  bg-slate-50  dark:bg-transparent">
+      <div className="text-center py-3 ">
+        <h4 className="text-xl text-center font-bold">Signup Form</h4>
       </div>
-      <div className="max-w-md mx-auto p-6 border rounded-xl shadow">
-        <h4 className="text-xl pb-6 text-center font-bold">Signup Form</h4>
+      <div className="max-w-md mx-auto p-6 border rounded-xl shadow bg-white">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
@@ -69,7 +69,6 @@ export default function Signup() {
                   <FormControl>
                     <Input type="text" placeholder="First name" {...field} />
                   </FormControl>
-                  <FormDescription>This is your First Name.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -85,7 +84,6 @@ export default function Signup() {
                   <FormControl>
                     <Input type="text" placeholder="Last Name" {...field}/>
                   </FormControl>
-                  <FormDescription>This is your Last Name.</FormDescription>
                 </FormItem>
               )}
             />
@@ -162,11 +160,12 @@ export default function Signup() {
             />
 
             {/* Submit */}
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full cursor-pointer">
               Submit
             </Button>
           </form>
         </Form>
+      </div>
       </div>
     </>
   );

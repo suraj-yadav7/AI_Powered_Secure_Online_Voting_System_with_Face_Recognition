@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vote, UserPlus, BarChart3, Brain, CheckCircle,
-  ArrowRight, Users, Lock, Zap, Shield, UserCheck } from 'lucide-react';
+  ArrowRight, Users, Lock, Zap, Shield, UserCheck, MonitorCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -13,10 +13,10 @@ const Home = () => {
       <div className='px-12 bg-background'>
         <div className="min-h-screen  ">
           {/* Hero Section */}
-          <section className="border-1 rounded-2xl space-y-6 py-4 md:py-12 lg:py-32">
+          <section id="intro" className="border-1 rounded-2xl space-y-6 py-4 md:py-10 lg:py-30">
             <div className=" mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
               <div className="rounded-2xl bg-muted p-4">
-                <Brain className="h-16 w-16" />
+                <MonitorCheck className="h-16 w-16" />
               </div>
               <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
                 AI-Powered Online Voting System
@@ -38,9 +38,9 @@ const Home = () => {
           </section>
 
           {/* Main Features */}
-          <section id="features" className=" space-y-6 bg-slate-50 py-8 dark:bg-transparent md:py-12 lg:py-24">
+          <section id="features" className=" space-y-6 bg-slate-50 py-8 dark:bg-transparent md:py-12 lg:py-8">
             <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-              <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+              <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl">
                 Complete Voting Solution
               </h2>
               <p className="max-w-[85rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
@@ -50,8 +50,8 @@ const Home = () => {
 
             <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
               {/* New Voter Registration */}
-              <Card className="relative overflow-hidden">
-                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+              <Card className="relative overflow-hidden h-50">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md ">
                   <div className="space-y-2">
                     <UserPlus className="h-12 w-12 text-green-600" />
                     <h3 className="font-bold">New Voter Registration</h3>
@@ -63,8 +63,8 @@ const Home = () => {
               </Card>
 
               {/* Election Management */}
-              <Card className="relative overflow-hidden">
-                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+              <Card className="relative overflow-hidden h-50">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md ">
                   <div className="space-y-2">
                     <Vote className="h-12 w-12 text-blue-600" />
                     <h3 className="font-bold">Election Platform</h3>
@@ -76,8 +76,8 @@ const Home = () => {
               </Card>
 
               {/* Results & Analytics */}
-              <Card className="relative overflow-hidden">
-                <CardContent className="flex h-[180px] flex-col justify-between rounded-md p-6">
+              <Card className="relative overflow-hidden h-50">
+                <CardContent className="flex h-[180px] flex-col justify-between rounded-md">
                   <div className="space-y-2">
                     <BarChart3 className="h-12 w-12 text-purple-600" />
                     <h3 className="font-bold">Results & Analytics</h3>
@@ -92,8 +92,8 @@ const Home = () => {
             {/* Feature Details */}
             <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
               {/* Registration Details */}
-              <Card>
-                <CardContent className="p-6">
+              <Card >
+                <CardContent className="">
                   <div className="space-y-4">
                     <div className="rounded-lg bg-green-100 p-3 dark:bg-green-900">
                       <UserPlus className="h-6 w-6 text-green-600" />
@@ -102,7 +102,7 @@ const Home = () => {
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-center">
                         <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                        Instant ID verification
+                        ID verification
                       </li>
                       <li className="flex items-center">
                         <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
@@ -122,7 +122,7 @@ const Home = () => {
 
               {/* Election Details */}
               <Card>
-                <CardContent className="p-6">
+                <CardContent >
                   <div className="space-y-4">
                     <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
                       <Vote className="h-6 w-6 text-blue-600" />
@@ -151,7 +151,7 @@ const Home = () => {
 
               {/* Results Details */}
               <Card>
-                <CardContent className="p-6">
+                <CardContent >
                   <div className="space-y-4">
                     <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
                       <BarChart3 className="h-6 w-6 text-purple-600" />
@@ -181,7 +181,7 @@ const Home = () => {
           </section>
 
           {/* Security Section */}
-          <section id="security" className=" py-8 md:py-12 lg:py-24">
+          <section id="security" className=" py-4 mb-6 md:py-6 lg:py-12">
             <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
               <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
                 Uncompromising Security
@@ -208,6 +208,20 @@ const Home = () => {
 
               <Card>
                 <CardContent className="flex flex-col items-center space-y-4 p-6">
+                  <div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
+                    <Zap className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <div className="space-y-2 text-center">
+                    <h3 className="font-semibold">Bio-Metric Verification</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Artificial Intelligence technology system guarantees 100% verfication.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6">
                   <div className="rounded-full bg-green-100 p-3 dark:bg-green-900">
                     <Lock className="h-8 w-8 text-green-600" />
                   </div>
@@ -220,30 +234,17 @@ const Home = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardContent className="flex flex-col items-center space-y-4 p-6">
-                  <div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
-                    <Zap className="h-8 w-8 text-purple-600" />
-                  </div>
-                  <div className="space-y-2 text-center">
-                    <h3 className="font-semibold">Blockchain Verification</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Immutable ledger technology guarantees result integrity
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      <section id="how-it-works" className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
             <p className="text-xl text-gray-600">Simple steps to make your voice heard</p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 ">
             {[
               { step: "1", title: "Sign Up", desc: "Create your account with basic information", icon: UserCheck },
               { step: "2", title: "Verify Identity", desc: "Submit required documents for verification", icon: Shield },
@@ -251,7 +252,7 @@ const Home = () => {
               { step: "4", title: "Start Voting", desc: "Participate in polls and community decisions", icon: Vote }
             ].map((item, index) => (
               <div key={index} className="text-center">
-                <div className="relative mb-8">
+                <div className="relative mb-6">
                   <span className="text-blue-600 font-bold text-sm">Step: {item.step}</span>
                   <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <item.icon className="w-8 h-8 text-white" />
@@ -266,7 +267,7 @@ const Home = () => {
       </section>
 
           {/* CTA Section */}
-          <section className=" py-8 md:py-12 lg:py-24">
+          <section className=" py-6 md:py-10 lg:py-20">
             <Card className="relative overflow-hidden">
               <CardContent className="p-8 md:p-12">
                 <div className="relative z-10 flex flex-col items-center space-y-4 text-center">

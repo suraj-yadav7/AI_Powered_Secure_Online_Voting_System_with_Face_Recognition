@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, Users, UserCheck, UserX, Shield, ShieldCheck, Search, Edit, Trash2, Eye, EyeOff, Phone, Mail, Calendar } from "lucide-react";
+import axios from 'axios';
+import { api } from '@/utils/endpointUrls';
+import toast from 'react-hot-toast';
 
 const User = () => {
   const [users, setUsers] = useState([
@@ -235,6 +238,31 @@ const User = () => {
     return "Inactive";
   };
 
+
+  const getUsers = async()=>{
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=user`)
+      if(!response.data){
+        toast.error("No Valid Response.")
+        return
+      };
+
+      const {data, message} = response.data
+      if(data?.length<1){
+        toast.error("No User Record Found.")
+        return
+      }
+      toast.success(message)
+      setUsers(data)
+    }catch(error){
+      console.log("Error occured while fetching user: ", error)
+    }
+  };
+
+  useEffect(() => {
+    getUsers()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -257,6 +285,69 @@ const User = () => {
             </AlertDescription>
           </Alert>
         )}
+
+                {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-100">Total Users</p>
+                  <p className="text-2xl font-bold">{users.filter(u => !u.isDeleted).length}</p>
+                </div>
+                <Users className="w-8 h-8 text-blue-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-100">Active Users</p>
+                  <p className="text-2xl font-bold">{users.filter(u => u.isActive && !u.isDeleted).length}</p>
+                </div>
+                <UserCheck className="w-8 h-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-yellow-100">Inactive Users</p>
+                  <p className="text-2xl font-bold">{users.filter(u => !u.isActive && !u.isDeleted).length}</p>
+                </div>
+                <UserX className="w-8 h-8 text-yellow-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-100">Admins</p>
+                  <p className="text-2xl font-bold">{users.filter(u => u.profile_type === 'admin' && !u.isDeleted).length}</p>
+                </div>
+                <ShieldCheck className="w-8 h-8 text-purple-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-red-100">Deleted Users</p>
+                  <p className="text-2xl font-bold">{users.filter(u => u.isDeleted).length}</p>
+                </div>
+                <Trash2 className="w-8 h-8 text-red-200" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Create User Form */}
@@ -563,69 +654,6 @@ const User = () => {
                     </Card>
                   ))
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100">Total Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => !u.isDeleted).length}</p>
-                </div>
-                <Users className="w-8 h-8 text-blue-200" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100">Active Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.isActive && !u.isDeleted).length}</p>
-                </div>
-                <UserCheck className="w-8 h-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-yellow-100">Inactive Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => !u.isActive && !u.isDeleted).length}</p>
-                </div>
-                <UserX className="w-8 h-8 text-yellow-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100">Admins</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.profile_type === 'admin' && !u.isDeleted).length}</p>
-                </div>
-                <ShieldCheck className="w-8 h-8 text-purple-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-red-100">Deleted Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.isDeleted).length}</p>
-                </div>
-                <Trash2 className="w-8 h-8 text-red-200" />
               </div>
             </CardContent>
           </Card>

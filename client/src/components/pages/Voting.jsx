@@ -20,9 +20,9 @@ const Voting = () => {
   // Sample election data based on your schema
   const [election] = useState({
     _id: "65f1234567890",
-    name: "Municipal Council Elections 2025",
+    name: "Greater Hyderabad Municipal Corporation Elections 2025",
     type: "Local Government",
-    total_votes: 15423,
+    total_votes: 3,
     result: false,
     nominees: [
       {
@@ -77,7 +77,7 @@ const Voting = () => {
       }
     ],
     createdAt: "2025-01-10T00:00:00Z",
-    deadline: "2025-02-15T23:59:59Z"
+    deadline: "2025-08-11T23:59:59Z"
   });
 
   const [selectedNominee, setSelectedNominee] = useState(null);
@@ -118,33 +118,30 @@ const Voting = () => {
   const sortedNominees = [...election.nominees].sort((a, b) => b.votes_count - a.votes_count);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 px-10 py-1 ">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="border-md bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600  text-white rounded-md">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center space-x-4">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">{election.name}</h1>
+              <h1 className="text-2xl font-bold text-white py-1">{election.name}</h1>
               <div className="flex items-center space-x-6 text-sm text-gray-600 mt-1">
-                <div className="flex items-center">
+                <div className="flex items-center text-white">
                   <Calendar className="w-4 h-4 mr-1" />
                   <span>Ends: {new Date(election.deadline).toLocaleDateString()}</span>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center text-white">
                   <Users className="w-4 h-4 mr-1" />
                   <span>{election.total_votes.toLocaleString()} votes cast</span>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center text-white">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>{election.type}</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <button
+              {/* <button
                 onClick={() => setShowResults(!showResults)}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
               >
@@ -152,7 +149,7 @@ const Voting = () => {
                 <span className="text-sm font-medium">
                   {showResults ? 'Hide Results' : 'Show Results'}
                 </span>
-              </button>
+              </button> */}
               {hasVoted && (
                 <div className="flex items-center space-x-2 text-green-600">
                   <CheckCircle className="w-5 h-5" />
@@ -164,7 +161,7 @@ const Voting = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 ">
         {/* Election Status */}
         <div className="mb-8">
           {isElectionActive() ? (
@@ -180,17 +177,18 @@ const Voting = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-gray-600 mr-3" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Election Closed</h3>
-                  <p className="text-gray-700 text-sm">
-                    This election has ended. Results are {election.result ? 'available' : 'being processed'}.
-                  </p>
-                </div>
-              </div>
-            </div>
+            // <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            //   <div className="flex items-center">
+            //     <AlertCircle className="w-5 h-5 text-gray-600 mr-3" />
+            //     <div>
+            //       <h3 className="font-medium text-gray-900">Election Closed</h3>
+            //       <p className="text-gray-700 text-sm">
+            //         This election has ended. Results are {election.result ? 'available' : 'being processed'}.
+            //       </p>
+            //     </div>
+            //   </div>
+            // </div>
+            ""
           )}
         </div>
 
@@ -279,8 +277,11 @@ const Voting = () => {
                       {hasVoted ? 'Vote Cast' : 'Vote for ' + nominee.full_name.split(' ')[0]}
                     </button>
                   )}
-                  <button className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                  <button className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer">
                     View Profile
+                  </button>
+                  <button className="px-4 py-3 border bg-blue-500 border-gray-300 rounded-lg text-white hover:bg-blue-300 transition-colors cursor-pointer">
+                    Vote
                   </button>
                 </div>
               </div>

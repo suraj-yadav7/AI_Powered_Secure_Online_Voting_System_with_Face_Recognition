@@ -37,15 +37,15 @@ function Login({ className, ...props}) {
   };
 
   return (
-    <div className={cn("flex flex-col gap-6 h-screen justify-center items-center", className)} {...props}>
+    <div className={cn("flex flex-col gap-6 h-screen justify-center items-center bg-slate-50  dark:bg-transparent", className)} {...props}>
       <Toaster />
-      <Card className="overflow-hidden p-0 w-[50%]">
+      <Card className="overflow-hidden p-0 w-[62%]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.svg"
+              src="src\assets\AI_Online_Voting_System.jpg"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" />
+              className="absolute inset-0 h-full w-full object-fit dark:brightness-[0.2] dark:grayscale" />
           </div>
             <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
@@ -107,7 +107,7 @@ function Login({ className, ...props}) {
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <a href="/signup" className="underline underline-offset-4">
                   Sign up
                 </a>
               </div>

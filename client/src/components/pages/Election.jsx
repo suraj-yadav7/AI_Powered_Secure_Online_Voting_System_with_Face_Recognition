@@ -30,7 +30,7 @@ const Election = () => {
       total_votes: 15420,
       result: true,
       nominees: ["1", "2", "3"],
-      createdAt: "2024-01-15T10:30:00Z"
+      createdAt: "2025-01-15T10:30:00Z"
     },
     {
       _id: "2", 

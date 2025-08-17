@@ -4,4 +4,5 @@ export const api = {
   login:`${base_url}/auth/login`,
   signup:`${base_url}/auth/register`,
   voter_register:`${base_url}/voter/register`,
+  generic_fetch:`${base_url}/generic/fetch`
 };

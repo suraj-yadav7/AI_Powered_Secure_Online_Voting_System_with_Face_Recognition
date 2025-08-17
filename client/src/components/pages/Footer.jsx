@@ -39,25 +39,25 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/" className="text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center group">
+                <a href="/"  className="text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center group">
                   <span>Home</span>
                   <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
               <li>
-                <a href="/about" className="text-gray-600 hover:text-green-600 transition-colors text-sm flex items-center group">
+                <a href="/" className="text-gray-600 hover:text-green-600 transition-colors text-sm flex items-center group">
                   <span>About</span>
                   <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
               <li>
-                <a href="/faq" className="text-gray-600 hover:text-purple-600 transition-colors text-sm flex items-center group">
+                <a href="/" className="text-gray-600 hover:text-purple-600 transition-colors text-sm flex items-center group">
                   <span>FAQs</span>
                   <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
               <li>
-                <a href="/contact" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm flex items-center group">
+                <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm flex items-center group">
                   <span>Contact</span>
                   <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
@@ -70,25 +70,25 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Platform</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/register" className="text-gray-600 hover:text-green-600 transition-colors text-sm flex items-center">
+                <a href="/signup" target='_blank' className="text-gray-600 hover:text-green-600 transition-colors text-sm flex items-center">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
                   Voter Registration
                 </a>
               </li>
               <li>
-                <a href="/elections" className="text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center">
+                <a href="/" className="text-gray-600 hover:text-blue-600 transition-colors text-sm flex items-center">
                   <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
                   Elections
                 </a>
               </li>
               <li>
-                <a href="/results" className="text-gray-600 hover:text-purple-600 transition-colors text-sm flex items-center">
+                <a href="/" className="text-gray-600 hover:text-purple-600 transition-colors text-sm flex items-center">
                   <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
                   Results & Analytics
                 </a>
               </li>
               <li>
-                <a href="/security" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm flex items-center">
+                <a href="#security" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm flex items-center">
                   <div className="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
                   Security Features
                 </a>
@@ -106,15 +106,15 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">Email</p>
-                  <a 
-                    href="mailto:support@aionlinevoting.com" 
+                  <a
+                    href="mailto:support@aionlinevoting.com"
                     className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   >
                     support@aionlinevoting.com
                   </a>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="bg-green-100 p-2 rounded-lg">
                   <Phone className="h-4 w-4 text-green-600" />
@@ -155,19 +155,19 @@ export default function Footer() {
             {/* Copyright */}
             <div className="flex items-center space-x-4">
               <p className="text-sm text-gray-500">
-                © 2025 AI Online Voting System. All rights reserved.
+                © 2025 AI Powered Online Voting System. All rights reserved.
               </p>
             </div>
 
             {/* Legal Links */}
             <div className="flex items-center space-x-6 text-sm">
-              <a href="/privacy" className="text-gray-500 hover:text-blue-600 transition-colors">
+              <a href="#intro" className="text-gray-500 hover:text-blue-600 transition-colors">
                 Privacy Policy
               </a>
-              <a href="/terms" className="text-gray-500 hover:text-green-600 transition-colors">
+              <a href="#intro" className="text-gray-500 hover:text-green-600 transition-colors">
                 Terms of Service
               </a>
-              <a href="/security" className="text-gray-500 hover:text-purple-600 transition-colors">
+              <a href="#security" className="text-gray-500 hover:text-purple-600 transition-colors">
                 Security
               </a>
             </div>

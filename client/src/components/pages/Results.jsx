@@ -23,9 +23,9 @@ const Results = () => {
   // Sample election data with completed results (result: true)
   const [election] = useState({
     _id: "65f1234567890",
-    name: "Municipal Council Elections 2025",
+    name: "Greater Hyderabad Municipal Corporation Elections 2025",
     type: "Local Government",
-    total_votes: 18750,
+    total_votes: 3,
     result: true,
     nominees: [
       {
@@ -86,7 +86,7 @@ const Results = () => {
     ],
     createdAt: "2025-01-10T00:00:00Z",
     endDate: "2025-02-15T23:59:59Z",
-    resultDeclaredAt: "2025-02-16T10:30:00Z"
+    resultDeclaredAt: "2025-08-25T23:59:59Z"
   });
 
   const [showDetailedStats, setShowDetailedStats] = useState(false);
@@ -119,43 +119,32 @@ const Results = () => {
   const sortedNominees = [...election.nominees].sort((a, b) => a.position - b.position);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 px-10 py-1">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-gradient-to-r from-slate-600 via-blue-600 to-indigo-600  text-white rounded-md">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
-              </button>
+
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Election Results</h1>
+                <h1 className="text-2xl font-bold  text-white">Election Results</h1>
                 <div className="flex items-center space-x-6 text-sm text-gray-600 mt-1">
-                  <div className="flex items-center">
+                  <div className="flex items-center text-white">
                     <Flag className="w-4 h-4 mr-1" />
                     <span>{election.name}</span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-white">
                     <Calendar className="w-4 h-4 mr-1" />
                     <span>Declared: {new Date(election.resultDeclaredAt).toLocaleDateString()}</span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-white">
                     <Users className="w-4 h-4 mr-1" />
                     <span>{election.total_votes.toLocaleString()} total votes</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <Share2 className="w-4 h-4" />
-                <span className="text-sm font-medium">Share Results</span>
-              </button>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                <Download className="w-4 h-4" />
-                <span className="text-sm font-medium">Download Report</span>
-              </button>
-            </div>
+
           </div>
         </div>
       </div>
@@ -166,7 +155,7 @@ const Results = () => {
           <div className="text-center">
             <div className="flex justify-center mb-4">
               <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <Trophy className="w-12 h-12 text-white" />
+                <Trophy className="w-12 h-12 text-black" />
               </div>
             </div>
             <h2 className="text-3xl font-bold mb-2">🎉 Election Winner Declared! 🎉</h2>

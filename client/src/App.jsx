@@ -26,8 +26,8 @@ const App = () =>{
     <>
     <Toaster/>
     {/* Header Section */}
-    <Header />
     <Router>
+      <Header />
       <Routes>
         <Route path="/"           element={<Home/>}/>
         <Route path="/login"      element={<Login/>}/>
