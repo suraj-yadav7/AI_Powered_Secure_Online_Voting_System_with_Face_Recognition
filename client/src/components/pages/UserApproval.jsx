@@ -6,8 +6,8 @@ const UserApproval = () => {
   const [requests, setRequests] = useState([
     {
       id: 1,
-      name: "John Doe",
-      email: "john.doe@email.com",
+      name: "Naveen Kumar",
+      email: "naveen@email.com",
       phone: "+91 9876543210",
       type: "Voter Registration",
       address: "123 Main St, New Delhi",

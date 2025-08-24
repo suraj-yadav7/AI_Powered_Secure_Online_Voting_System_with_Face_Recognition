@@ -19,7 +19,7 @@ const Home = () => {
                 <MonitorCheck className="h-16 w-16" />
               </div>
               <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
-                AI-Powered Online Voting System
+                AI-Powered Secure Online Voting System
               </h1>
               <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
                 Secure, transparent, and intelligent democratic participation. Experience the future of voting

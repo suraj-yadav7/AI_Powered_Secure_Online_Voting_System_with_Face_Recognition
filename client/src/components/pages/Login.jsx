@@ -1,5 +1,6 @@
 import React, {useState} from "react"
 import axios from "axios"
+axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom"
 import toast, { Toaster } from "react-hot-toast"
 
@@ -20,16 +21,17 @@ function Login({ className, ...props}) {
       e.preventDefault()
       const response = await axios.post(api.login, loginData)
       console.log("response: ", response)
-      const {success, message} = response.data
+      const {success, message, data} = response.data
 
       if(success){
         toast.success(message)
         setLoginData({email_phone:"", password:""})
         setTimeout(()=>{
-          navigate("/")
+          navigate("/user-dashboard")
         }, 1000)
       };
-
+      const userInfo = JSON.stringify(data)
+      localStorage.setItem("userinfo", userInfo)
     }catch(error){
       console.log("Error occured while login user: ", error)
       toast.error(error.response?.data?.message || error.message)

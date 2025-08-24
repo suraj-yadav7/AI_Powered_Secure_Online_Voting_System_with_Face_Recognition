@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   User, 
   Vote, 
@@ -23,18 +23,42 @@ import {
   Mail,
   Edit3
 } from 'lucide-react';
+import { api } from '@/utils/endpointUrls';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { Button } from '../ui/button';
 
 const UserDashboard = () => {
+  const [userData, setUserData] = useState(null)
+
+  const getUserDetails = async() => {
+    const userinfo = localStorage.getItem("userinfo")
+    const userData = JSON.parse(userinfo)
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=user&id=${userData.user_id}`)
+      if(!response.data) toast.error("No valid response.")
+
+      setUserData(response.data.data)
+      toast.success("user record fetched successfully.")
+    }catch(error){
+      console.log("Error occured while fetching user-data: ", error)
+    }
+  };
+
+  useEffect(() => {
+    getUserDetails()
+  },[])
+
   // User status simulation - change this to test different states
   const [userStatus] = useState({
     isLoggedIn: true,
     isVoterRegistered: true, // false = not registered, 'pending' = waiting approval, true = approved
     hasVoted: false,
     profile: {
-      name: "John Doe",
-      email: "john.doe@email.com",
+      name: "Suraj Yadav",
+      email: "suraj@email.com",
       phone: "+91 9876543210",
-      address: "123 Main St, New Delhi",
+      address: "Hyderabad, Telangana",
       profileComplete: 85,
       joinDate: "2025-01-15"
     }
@@ -140,7 +164,7 @@ const UserDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {userStatus.profile.name}</p>
+              <p className="text-gray-600">Welcome back, {userData?.first_name}</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
@@ -153,7 +177,7 @@ const UserDashboard = () => {
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">{userStatus.profile.name}</span>
+                <span className="text-sm font-medium text-gray-700">{userData?.first_name}</span>
               </div>
             </div>
           </div>
@@ -291,17 +315,17 @@ const UserDashboard = () => {
                   <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
                     <User className="w-8 h-8 text-white" />
                   </div>
-                  <h4 className="font-semibold text-gray-900">{userStatus.profile.name}</h4>
+                  <h4 className="font-semibold text-gray-900">{userData?.first_name}</h4>
                   <p className="text-sm text-gray-600">Community Member</p>
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center text-gray-600">
                     <Mail className="w-4 h-4 mr-3" />
-                    <span className="truncate">{userStatus.profile.email}</span>
+                    <span className="truncate">{userData?.email}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Phone className="w-4 h-4 mr-3" />
-                    <span>{userStatus.profile.phone}</span>
+                    <span>{userData?.phone}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <MapPin className="w-4 h-4 mr-3" />

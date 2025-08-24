@@ -25,7 +25,7 @@ const Results = () => {
     _id: "65f1234567890",
     name: "Greater Hyderabad Municipal Corporation Elections 2025",
     type: "Local Government",
-    total_votes: 3,
+    total_votes: 14152,
     result: true,
     nominees: [
       {
@@ -86,7 +86,7 @@ const Results = () => {
     ],
     createdAt: "2025-01-10T00:00:00Z",
     endDate: "2025-02-15T23:59:59Z",
-    resultDeclaredAt: "2025-08-25T23:59:59Z"
+    resultDeclaredAt: "2025-07-21T23:59:59Z"
   });
 
   const [showDetailedStats, setShowDetailedStats] = useState(false);

@@ -63,11 +63,11 @@ export const login = async(req, res, next) => {
     };
 
     const jwtSecret = process.env.JWT_SECRET
-    const {_id, name, email, profile_type} = userExist
+    const {_id, first_name, email, profile_type} = userExist
     const data = {
       user:{
         user_id:_id,
-        name,
+        first_name,
         email,
         cookieExist:true,
         user_type:profile_type
@@ -84,7 +84,7 @@ export const login = async(req, res, next) => {
 
     const userData={
       user_id:_id,
-      name,
+      first_name,
       email
     }
     return res.status(200).json({success:true, message:"User logged successfully", data:userData})
