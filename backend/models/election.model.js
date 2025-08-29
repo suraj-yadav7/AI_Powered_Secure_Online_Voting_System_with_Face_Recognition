@@ -21,7 +21,11 @@ const electionSchema = new mongoose.Schema({
   nominees:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:"nominee",
-  }]
+  }],
+  deadline:{
+    type:Date,
+    required:true
+  }
 }, {timestamps:true})
 
 const Election = mongoose.model("election", electionSchema)

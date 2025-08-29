@@ -5,10 +5,10 @@ import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 /** Create New Nominee */
 export const createNominee = async(req, res, next) => {
   try{
-    const {full_name, political_party, constituency} = req.body
-    if(!full_name || !political_party || !constituency ){
+    const {full_name, political_party, constituency, experience, manifesto} = req.body
+    if(!full_name || !political_party || !constituency || !experience || !manifesto ){
       return res.status(400).json({success:false,
-        message:"Required valid fields 'full_name, political_party, constituency'."})
+        message:"Required valid fields 'full_name, political_party, constituency, experience, manifesto'."})
     };
 
     const recordExist = await Nominee.findOne({full_name})
@@ -19,7 +19,9 @@ export const createNominee = async(req, res, next) => {
     const newNominee = new Nominee({
       full_name,
       political_party,
-      constituency
+      constituency,
+      experience,
+      manifesto
     })
     await newNominee.save()
     return res.status(200).json({success:true, message:"Nominee Created Successfully.", data:newNominee})

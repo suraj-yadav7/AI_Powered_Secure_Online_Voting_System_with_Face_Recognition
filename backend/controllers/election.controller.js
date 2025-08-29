@@ -5,9 +5,9 @@ import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 /** Create New Election */
 export const createElection = async(req, res, next) => {
   try{
-    const {name, type, nominees} = req.body
-    if(!name || !type){
-      return res.status(400).json({status:false, message:"Required valid fields 'name, type'."})
+    const {name, type, nominees, days} = req.body
+    if(!name || !type || !days){
+      return res.status(400).json({status:false, message:"Required valid fields 'name, type, days'."})
     };
 
     const checkRecord = await Election.findOne({name})
@@ -15,7 +15,11 @@ export const createElection = async(req, res, next) => {
       return res.status(400).json({success:false, message:"Election already exist with this name."})
     };
 
+    const deadline = new Date();
+    deadline.setDate(deadline.getDate() + parseInt(days));
+
     const newElection = new Election({
+      deadline,
       name,
       type,
       nominees:nominees

@@ -17,6 +17,14 @@ const nomineeSchema = new mongoose.Schema({
   votes_count:{
     type:Number,
     default:0
+  },
+  experience:{
+    type:String,
+    required:true
+  },
+  manifesto:{
+    type:String,
+    required:true
   }
 }, {timestamps:true})
 

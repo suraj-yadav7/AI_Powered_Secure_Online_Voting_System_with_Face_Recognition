@@ -20,6 +20,16 @@ const Header = ()=>{
     }
   };
 
+  const handleLogout = () =>{
+    try{
+        localStorage.removeItem("userinfo")
+        setUserData(null)
+    }
+    catch(error){
+      console.log("Error while loginout user: ", error)
+    }
+  };
+
   useEffect(()=>{
     getUserInfo()
   }, [])
@@ -47,11 +57,24 @@ const Header = ()=>{
                 {
                   userData && userData?
                   <div className="flex">
-                    <Link to="/login">
-                      <Button className="ml-4 cursor-pointer p-4 bg-red-500" size="sm">
-                        logout
-                      </Button>
-                    </Link>
+                    {
+                      !userData?
+                        <div>
+                          <Link to="/login">
+                            <Button className="ml-4 cursor-pointer p-4 bg-black" size="sm">
+                              login
+                            </Button>
+                          </Link>
+                        </div>:
+                        <div onClick={handleLogout}>
+                          <Link to="/login">
+                            <Button className="ml-4 cursor-pointer p-4 bg-red-500" size="sm">
+                              logout
+                            </Button>
+                          </Link>
+                        </div>
+                    }
+
                   </div>:
                   <div>
                 <div className="w-full flex-1 md:w-auto md:flex-none ">

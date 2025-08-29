@@ -15,16 +15,26 @@ import {
   EyeOff,
   User
 } from 'lucide-react';
+import axios from 'axios';
+import { api } from '@/utils/endpointUrls';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Button } from '../ui/button';
 
 const Voting = () => {
   // Sample election data based on your schema
-  const [election] = useState({
+  const [election, setElection] = useState({
     _id: "65f1234567890",
     name: "Greater Hyderabad Municipal Corporation Elections 2025",
     type: "Local Government",
     total_votes: 3,
     result: false,
-    nominees: [
+    createdAt: "2025-01-10T00:00:00Z",
+    deadline: "2025-08-11T23:59:59Z"
+  });
+  console.log("ection: ", election)
+
+  const nominees= [
       {
         _id: "65f1111111111",
         full_name: "Dr. Rajesh Kumar",
@@ -34,7 +44,7 @@ const Voting = () => {
         manifesto: "Focused on infrastructure development, healthcare improvements, and education reforms.",
         experience: "15 years in public service",
         image: null
-      },
+        },
       {
         _id: "65f2222222222", 
         full_name: "Priya Sharma",
@@ -75,16 +85,45 @@ const Voting = () => {
         experience: "RTI activist, 10 years transparency advocacy",
         image: null
       }
-    ],
-    createdAt: "2025-01-10T00:00:00Z",
-    deadline: "2025-08-11T23:59:59Z"
-  });
+    ]
 
   const [selectedNominee, setSelectedNominee] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [votedFor, setVotedFor] = useState(null);
   const [showResults, setShowResults] = useState(false);
+
+  const [nomineesData, setNomineesData] = useState(nominees)
+
+  const {id} = useParams()
+  const electionId = "68b1e396f7fc4323e668e61a"
+  const getElection = async()=> {
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=election&id=${electionId}`)
+      if(!response.data){
+        toast.error("failed to fetch election details")
+      }
+      toast.success("election details fetched successfully.")
+      setElection(response.data.data)
+    }catch(error){
+      console.log("Error occured while fetching election details: ", error)
+    }
+  };
+
+  const getNominess = async()=> {
+    try{
+      const response = await Promise.all(
+        election.nominees.map( async(id) => {
+          const res = await axios.get(`${api.generic_fetch}?data=nominee&id=${id}`)
+          return res.data.data
+        }))
+      console.log("promise nominees: ", response)
+      toast.success("nominees details fetched successfully.")
+      setNomineesData(response)
+    }catch(error){
+      console.log("Error occured while fetching election details: ", error)
+    }
+  };
 
   const handleVoteClick = (nominee) => {
     if (hasVoted) return;
@@ -115,7 +154,7 @@ const Voting = () => {
     return new Date() < new Date(election.deadline) && !election.result;
   };
 
-  const sortedNominees = [...election.nominees].sort((a, b) => b.votes_count - a.votes_count);
+  const sortedNominees = nomineesData.sort((a, b) => b.votes_count - a.votes_count);
 
   return (
     <div className="min-h-screen bg-gray-50 px-10 py-1 ">
@@ -158,6 +197,8 @@ const Voting = () => {
               )}
             </div>
           </div>
+            <Button onClick={getElection}>Election</Button>
+            <Button onClick={getNominess}>Nominees</Button>
         </div>
       </div>
 
@@ -267,22 +308,22 @@ const Voting = () => {
                     <button
                       onClick={() => handleVoteClick(nominee)}
                       disabled={hasVoted}
-                      className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium transition-colors ${
+                      className={`cursor-pointer flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium transition-colors ${
                         hasVoted 
                           ? 'bg-gray-100 text-gray-500 cursor-not-allowed' 
                           : 'bg-blue-600 text-white hover:bg-blue-700'
                       }`}
                     >
-                      <Vote className="w-4 h-4 mr-2" />
+                      <Vote className="w-4 h-4 mr-2 " />
                       {hasVoted ? 'Vote Cast' : 'Vote for ' + nominee.full_name.split(' ')[0]}
                     </button>
                   )}
-                  <button className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer">
+                  {/* <button className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer">
                     View Profile
                   </button>
                   <button className="px-4 py-3 border bg-blue-500 border-gray-300 rounded-lg text-white hover:bg-blue-300 transition-colors cursor-pointer">
                     Vote
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

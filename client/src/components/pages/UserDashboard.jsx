@@ -30,6 +30,35 @@ import { Button } from '../ui/button';
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState(null)
+    const [activePolls, setActivePolls] = useState([
+    {
+      id: 1,
+      name: "Community Budget Allocation 2025",
+      description: "Vote on how the community budget should be allocated across different projects",
+      deadline: "2025-02-15",
+      result: true,
+      type: "Budget",
+      total_votes: 1247
+    },
+    {
+      id: 2, 
+      name: "New Park Development Location",
+      description: "Choose the location for the new community park development project",
+      deadline: "2025-02-20",
+      result: true,
+      type: "Development",
+      total_votes: 892
+    },
+    {
+      id: 3,
+      name: "School Improvement Initiative",
+      description: "Vote on priority areas for school infrastructure improvements",
+      deadline: "2025-02-25",
+      result: true,
+      type: "Education",
+      total_votes: 634
+    }
+  ]);
 
   const getUserDetails = async() => {
     const userinfo = localStorage.getItem("userinfo")
@@ -44,6 +73,22 @@ const UserDashboard = () => {
       console.log("Error occured while fetching user-data: ", error)
     }
   };
+
+  const getElections = async()=> {
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=election`)
+      if(!response.data){
+        toast.error("failed to fetch election details")
+      }
+      const {data} = response.data
+      console.log("reee: ", response.data.data)
+      toast.success("election details fetched successfully.")
+      setActivePolls((prev) => ([ ...data, ...prev]))
+    }catch(error){
+      console.log("Error occured while fetching election details: ", error)
+    }
+  };
+  console.log("pp: ", activePolls)
 
   useEffect(() => {
     getUserDetails()
@@ -64,35 +109,7 @@ const UserDashboard = () => {
     }
   });
 
-  const [activePolls] = useState([
-    {
-      id: 1,
-      title: "Community Budget Allocation 2025",
-      description: "Vote on how the community budget should be allocated across different projects",
-      endDate: "2025-02-15",
-      participated: false,
-      category: "Budget",
-      totalVotes: 1247
-    },
-    {
-      id: 2, 
-      title: "New Park Development Location",
-      description: "Choose the location for the new community park development project",
-      endDate: "2025-02-20",
-      participated: true,
-      category: "Development",
-      totalVotes: 892
-    },
-    {
-      id: 3,
-      title: "School Improvement Initiative",
-      description: "Vote on priority areas for school infrastructure improvements",
-      endDate: "2025-02-25",
-      participated: false,
-      category: "Education",
-      totalVotes: 634
-    }
-  ]);
+
 
   const [notifications] = useState([
     { id: 1, message: "New poll available: Community Budget Allocation 2025", time: "2 hours ago", type: "poll" },
@@ -107,6 +124,7 @@ const UserDashboard = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
+              
               <h3 className="text-xl font-bold mb-2">Complete Your Voter Registration</h3>
               <p className="text-blue-100 mb-4">Register as a voter to participate in community polls and elections</p>
               <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors">
@@ -159,6 +177,8 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
+          <Button onClick={getElections}>getPolls</Button>
+
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -217,7 +237,7 @@ const UserDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Polls Participated</p>
-                    <p className="text-2xl font-bold text-gray-900">{activePolls.filter(p => p.participated).length}</p>
+                    <p className="text-2xl font-bold text-gray-900">{activePolls && activePolls.filter(p => p.result).length}</p>
                   </div>
                   <Vote className="w-8 h-8 text-green-500" />
                 </div>
@@ -255,7 +275,7 @@ const UserDashboard = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">{poll.title}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900">{poll.name}</h3>
                           {poll.participated && (
                             <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full flex items-center">
                               <CheckCircle className="w-3 h-3 mr-1" />
@@ -267,11 +287,11 @@ const UserDashboard = () => {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <Calendar className="w-4 h-4 mr-1" />
-                            <span>Ends {new Date(poll.endDate).toLocaleDateString()}</span>
+                            <span>Ends {new Date(poll.deadline).toLocaleDateString()}</span>
                           </div>
                           <div className="flex items-center">
                             <Users className="w-4 h-4 mr-1" />
-                            <span>{poll.totalVotes.toLocaleString()} votes</span>
+                            <span>{poll.total_votes.toLocaleString()} votes</span>
                           </div>
                           <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
                             {poll.category}
@@ -280,7 +300,7 @@ const UserDashboard = () => {
                       </div>
                       <div className="ml-4">
                         {canVote ? (
-                          poll.participated ? (
+                          poll.result ? (
                             <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
                               Already Voted
                             </button>
