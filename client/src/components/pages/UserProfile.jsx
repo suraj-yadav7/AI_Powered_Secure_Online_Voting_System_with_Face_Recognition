@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Vote, User, Mail, Phone, Shield, Settings, Bell, Eye, EyeOff, Save, Edit, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,6 +7,9 @@ import {Input} from '@/components/ui/input'
 import {Switch} from '@/components/ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import axios from 'axios';
+import { api } from '@/utils/endpointUrls';
+import toast from 'react-hot-toast';
 
 
 export default function UserProfile() {
@@ -21,26 +24,51 @@ export default function UserProfile() {
     isActive: true
   });
 
-  const [notifications, setNotifications] = useState({
-    email_alerts: true,
-    sms_alerts: false,
-    election_updates: true,
-    security_alerts: true
-  });
-
-  const handleSave = () => {
-    setIsEditing(false);
-    // Here you would typically save to your backend
-    alert("Profile updated successfully!");
-  };
 
   const handleInputChange = (field, value) => {
     setUserData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleNotificationChange = (field, value) => {
-    setNotifications(prev => ({ ...prev, [field]: value }));
+  /** Fetching User Details */
+  const getUser = async() =>{
+    try{
+      const userInfo = JSON.parse(localStorage.getItem("userinfo"))
+      if(!userInfo){
+        return
+      };
+
+      const response = await axios.get(`${api.generic_fetch}?data=user&id=${userInfo.user_id}`)
+      if(!response.data){
+        toast.error("No valid response from server")
+        return
+      }
+      setUserData(response.data.data)
+    }catch(error){
+      console.log("Error occurred while fetching user-data: ", error)
+    }
   };
+
+  const handleSave = async() => {
+    setIsEditing(false);
+    const response = await axios.put(`${api.update_user}`, {userData})
+    if(!response.data){
+      toast.error("No valid response from server.")
+    }
+  };
+
+  const handlDeactive = async() =>{
+    const data = userData
+    data.isActive=false
+    const response = await axios.put(`${api.update_user}`, {data})
+    if(!response.data){
+      toast.error("No valid response from server.")
+    }
+  }
+
+
+  useEffect(() =>{
+    getUser()
+  }, [])
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
@@ -69,7 +97,7 @@ export default function UserProfile() {
               </div>
               <div className="flex space-x-2">
                 {!isEditing ? (
-                  <Button  className="bg-white/20 hover:bg-white/30 text-white border-white/30" size="sm">
+                  <Button onClick={() => {setIsEditing(true)}}  className="bg-white/20 hover:bg-white/30 text-white border-white/30" size="sm">
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Button>
@@ -79,8 +107,8 @@ export default function UserProfile() {
                       <Save className="w-4 h-4 mr-2" />
                       Save
                     </Button>
-                    <Button onClick={handleCancel} className="bg-white/20 hover:bg-white/30 text-white border-white/30" size="sm">
-                      <X className="w-4 h-4 mr-2" />
+                    <Button onClick={() => {setIsEditing(false)}} className="bg-white/20 hover:bg-white/30 text-white border-white/30" size="sm">
+                      {/* <X className="w-4 h-4 mr-2" /> */}
                       Cancel
                     </Button>
                   </>
@@ -250,126 +278,6 @@ export default function UserProfile() {
             </CardContent>
           </Card>
 
-          {/* Notification Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
-                  <Bell className="h-5 w-5 text-green-600" />
-                </div>
-                <span>Notification Preferences</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Email Alerts</Label>
-                  <p className="text-sm text-gray-500">Receive important updates via email</p>
-                </div>
-                <Switch 
-                  checked={notifications.email_alerts}
-                  onCheckedChange={(value) => handleNotificationChange('email_alerts', value)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>SMS Alerts</Label>
-                  <p className="text-sm text-gray-500">Get text messages for urgent notifications</p>
-                </div>
-                <Switch 
-                  checked={notifications.sms_alerts}
-                  onCheckedChange={(value) => handleNotificationChange('sms_alerts', value)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Election Updates</Label>
-                  <p className="text-sm text-gray-500">Stay informed about upcoming elections</p>
-                </div>
-                <Switch 
-                  checked={notifications.election_updates}
-                  onCheckedChange={(value) => handleNotificationChange('election_updates', value)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Security Alerts</Label>
-                  <p className="text-sm text-gray-500">Get notified of security-related activities</p>
-                </div>
-                <Switch 
-                  checked={notifications.security_alerts}
-                  onCheckedChange={(value) => handleNotificationChange('security_alerts', value)}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <div className="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-lg">
-                  <Settings className="h-5 w-5 text-indigo-600" />
-                </div>
-                <span>Quick Actions</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" className="h-auto p-4 justify-start">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      <User className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">Voter Registration</p>
-                      <p className="text-sm text-gray-500">Complete your voter profile</p>
-                    </div>
-                  </div>
-                </Button>
-                
-                <Button variant="outline" className="h-auto p-4 justify-start">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-purple-100 p-2 rounded-lg">
-                      <Vote className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">View Elections</p>
-                      <p className="text-sm text-gray-500">See available elections</p>
-                    </div>
-                  </div>
-                </Button>
-                
-                <Button variant="outline" className="h-auto p-4 justify-start">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-blue-100 p-2 rounded-lg">
-                      <Shield className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">Security Center</p>
-                      <p className="text-sm text-gray-500">Manage security settings</p>
-                    </div>
-                  </div>
-                </Button>
-                
-                <Button variant="outline" className="h-auto p-4 justify-start">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-indigo-100 p-2 rounded-lg">
-                      <Settings className="h-5 w-5 text-indigo-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">Account Settings</p>
-                      <p className="text-sm text-gray-500">Advanced preferences</p>
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Account Actions */}
           <Card className="border-red-200 bg-red-50/30 dark:border-red-800 dark:bg-red-950/20">
             <CardHeader>
@@ -384,7 +292,7 @@ export default function UserProfile() {
                   Manage your account status and data. These actions are permanent and cannot be undone.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                  <Button onClick={handlDeactive} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
                     Deactivate Account
                   </Button>
                   <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">

@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema({
     type:String,
     enum:["user", "admin"],
     default:"user"
+  },
+  voterId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"user"
   }
 }, {timestamps:true})
 

@@ -1,4 +1,5 @@
 import { payloadChecker } from "../middleware/payloadChecker.js";
+import User from "../models/user.model.js";
 import Voter from "../models/voter.model.js";
 import { objSanitizeflatten } from "../utils/updateObjSanitise.js";
 
@@ -24,6 +25,10 @@ export const registerVoter = async(req, res, next) =>{
       ...req.body
     })
     await newVoter.save()
+
+    await new User.findOneAndUpdate({email:req.body.email}, {
+      $set:{voterId:newVoter.id}}, {new:true, runValidators:true})
+
     return res.status(200).json({success:true, message:"Voter Profile Created Successfully.", data:newVoter})
   }catch(error){
     next(error)

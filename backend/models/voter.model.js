@@ -78,8 +78,16 @@ const voterSchema = new mongoose.Schema({
     type:String,
     required:true
   },
-  face_recognition:{
-    type:String
+  face_encodings: {
+    type: [[Number]],
+    default: []
+  },
+  face_version:{
+    type: Number,
+    default: 1
+  },
+  face_enrolled_at:{
+    type: Date
   },
   isDeleted:{
     type:Boolean,

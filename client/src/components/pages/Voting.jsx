@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Vote, 
   CheckCircle, 
@@ -17,24 +17,13 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { api } from '@/utils/endpointUrls';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Button } from '../ui/button';
 
 const Voting = () => {
-  // Sample election data based on your schema
-  const [election, setElection] = useState({
-    _id: "65f1234567890",
-    name: "Greater Hyderabad Municipal Corporation Elections 2025",
-    type: "Local Government",
-    total_votes: 3,
-    result: false,
-    createdAt: "2025-01-10T00:00:00Z",
-    deadline: "2025-08-11T23:59:59Z"
-  });
-  console.log("ection: ", election)
-
-  const nominees= [
+  /** staticData */
+  const nomineesStaticData= [
       {
         _id: "65f1111111111",
         full_name: "Dr. Rajesh Kumar",
@@ -87,33 +76,47 @@ const Voting = () => {
       }
     ]
 
+  const electionStaticData={
+    _id: "65f1234567890",
+    name: "Greater Hyderabad Municipal Corporation Elections 2025",
+    type: "Local Government",
+    total_votes: 3,
+    result: false,
+    createdAt: "2025-01-10T00:00:00Z",
+    deadline: "2025-08-11T23:59:59Z"
+  }
+
+  // Sample election data based on your schema
+  const [election, setElection] = useState("");
   const [selectedNominee, setSelectedNominee] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [votedFor, setVotedFor] = useState(null);
   const [showResults, setShowResults] = useState(false);
-
-  const [nomineesData, setNomineesData] = useState(nominees)
+  const [nomineesData, setNomineesData] = useState([])
 
   const {id} = useParams()
-  const electionId = "68b1e396f7fc4323e668e61a"
+  const electionId =  id || "68b1e396f7fc4323e668e61a"
   const getElection = async()=> {
     try{
       const response = await axios.get(`${api.generic_fetch}?data=election&id=${electionId}`)
+      console.log("electiion: ", response.data.data)
       if(!response.data){
         toast.error("failed to fetch election details")
       }
       toast.success("election details fetched successfully.")
-      setElection(response.data.data)
+      setElection(response.data?.data)
+      return response.data?.data?.nominees
     }catch(error){
       console.log("Error occured while fetching election details: ", error)
     }
   };
 
-  const getNominess = async()=> {
+  const getNominees = async(nomineesList)=> {
+    console.log("nominees: ", election)
     try{
       const response = await Promise.all(
-        election.nominees.map( async(id) => {
+        nomineesList && nomineesList.map( async(id) => {
           const res = await axios.get(`${api.generic_fetch}?data=nominee&id=${id}`)
           return res.data.data
         }))
@@ -121,14 +124,15 @@ const Voting = () => {
       toast.success("nominees details fetched successfully.")
       setNomineesData(response)
     }catch(error){
-      console.log("Error occured while fetching election details: ", error)
+      console.log("Error occured while fetching nominees details: ", error)
     }
   };
-
+  const navigate = useNavigate()
   const handleVoteClick = (nominee) => {
     if (hasVoted) return;
     setSelectedNominee(nominee);
     setShowConfirmation(true);
+    navigate(`/face-capturing/${electionId}`)
   };
 
   const confirmVote = () => {
@@ -155,6 +159,14 @@ const Voting = () => {
   };
 
   const sortedNominees = nomineesData.sort((a, b) => b.votes_count - a.votes_count);
+  const getElectionAndNominees = async() => {
+    const resNomineesList = await getElection()
+
+    await getNominees(resNomineesList)
+  }
+  useEffect(() => {
+    getElectionAndNominees()
+  },[])
 
   return (
     <div className="min-h-screen bg-gray-50 px-10 py-1 ">
@@ -167,15 +179,15 @@ const Voting = () => {
               <div className="flex items-center space-x-6 text-sm text-gray-600 mt-1">
                 <div className="flex items-center text-white">
                   <Calendar className="w-4 h-4 mr-1" />
-                  <span>Ends: {new Date(election.deadline).toLocaleDateString()}</span>
+                  <span>Ends: {new Date(election && election.deadline).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center text-white">
                   <Users className="w-4 h-4 mr-1" />
-                  <span>{election.total_votes.toLocaleString()} votes cast</span>
+                  <span>{ election && election.total_votes.toLocaleString()} votes cast</span>
                 </div>
                 <div className="flex items-center text-white">
                   <MapPin className="w-4 h-4 mr-1" />
-                  <span>{election.type}</span>
+                  <span>{ election && election.type}</span>
                 </div>
               </div>
             </div>
@@ -197,8 +209,6 @@ const Voting = () => {
               )}
             </div>
           </div>
-            <Button onClick={getElection}>Election</Button>
-            <Button onClick={getNominess}>Nominees</Button>
         </div>
       </div>
 

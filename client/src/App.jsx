@@ -21,6 +21,7 @@ import Voting from "./components/pages/Voting";
 import Results from "./components/pages/Results";
 import Layout from "./components/pages/Layout";
 import "./App.css"
+import FaceRecognition from "./components/FaceCapture";
 
 
 const App = () =>{
@@ -36,7 +37,7 @@ const App = () =>{
           <Route path="/"           element={<Home/>}/>
           <Route path="/user"       element={<User/>}/>
           <Route path="/voter"      element={<Voter/>}/>
-          <Route path="/voting"     element={<Voting/>}/>
+          <Route path="/voting/:id"     element={<Voting/>}/>
           <Route path="/result"     element={<Results/>}/>
           <Route path="/nominee"    element={<Nominee/>}/>
           <Route path="/election"   element={<Election/>}/>
@@ -47,6 +48,7 @@ const App = () =>{
           <Route path="/voter-register"   element={<VoterRegistration/>}/>
           <Route path="/admin-dashboard"  element={<AdminDashboard/>}/>
           <Route path="/user-dashboard"   element={<UserDashboard/>}/>
+          <Route path="/face-capturing/:id"   element={<FaceRecognition/>} />
         </Route>
       </Routes>
     </Router>

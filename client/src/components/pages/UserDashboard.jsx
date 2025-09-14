@@ -27,11 +27,10 @@ import { api } from '@/utils/endpointUrls';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Button } from '../ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const UserDashboard = () => {
-  const [userData, setUserData] = useState(null)
-    const [activePolls, setActivePolls] = useState([
-    {
+  const pollsData =    [ {
       id: 1,
       name: "Community Budget Allocation 2025",
       description: "Vote on how the community budget should be allocated across different projects",
@@ -58,7 +57,11 @@ const UserDashboard = () => {
       type: "Education",
       total_votes: 634
     }
-  ]);
+  ];
+
+  const [userData, setUserData] = useState(null)
+  const [activePolls, setActivePolls] = useState(pollsData);
+  const navigate = useNavigate()
 
   const getUserDetails = async() => {
     const userinfo = localStorage.getItem("userinfo")
@@ -83,15 +86,35 @@ const UserDashboard = () => {
       const {data} = response.data
       console.log("reee: ", response.data.data)
       toast.success("election details fetched successfully.")
-      setActivePolls((prev) => ([ ...data, ...prev]))
+      setActivePolls([ ...data, ...pollsData])
     }catch(error){
       console.log("Error occured while fetching election details: ", error)
     }
   };
-  console.log("pp: ", activePolls)
+
+  const handleNavigate = (id)=> {
+    console.log("id: ", id)
+    navigate(`/voting/${id}`)
+  };
+
+  const navigatingUser = (pageName) => {
+    const pagesArr=[
+      { name: "Update Profile", link:"/user-profile"},
+      { name: "View Voting History", link:"/voter-profile"},
+      { name: "Account Settings", link:"/user-profile" },
+      { name: "Help & Support", icon:"/user-dashboard"}
+    ]
+
+    pagesArr.forEach((elem) => {
+      if(elem.name === pageName){
+        navigate(elem.link)
+      }
+    })
+  };
 
   useEffect(() => {
     getUserDetails()
+    getElections()
   },[])
 
   // User status simulation - change this to test different states
@@ -111,11 +134,6 @@ const UserDashboard = () => {
 
 
 
-  const [notifications] = useState([
-    { id: 1, message: "New poll available: Community Budget Allocation 2025", time: "2 hours ago", type: "poll" },
-    { id: 2, message: "Your voter registration has been approved!", time: "1 day ago", type: "approval" },
-    { id: 3, message: "Profile completion: Add your profile photo", time: "3 days ago", type: "profile" }
-  ]);
 
   const getStatusCard = () => {
     if (userStatus.isVoterRegistered === false) {
@@ -124,7 +142,7 @@ const UserDashboard = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
-              
+
               <h3 className="text-xl font-bold mb-2">Complete Your Voter Registration</h3>
               <p className="text-blue-100 mb-4">Register as a voter to participate in community polls and elections</p>
               <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors">
@@ -177,7 +195,6 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-          <Button onClick={getElections}>getPolls</Button>
 
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -187,12 +204,6 @@ const UserDashboard = () => {
               <p className="text-gray-600">Welcome back, {userData?.first_name}</p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Bell className="w-6 h-6 text-gray-600" />
-                {notifications.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                )}
-              </div>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 text-white" />
@@ -264,11 +275,11 @@ const UserDashboard = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">Available Polls</h2>
-                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                {/* <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
                   View All <ChevronRight className="w-4 h-4 ml-1" />
-                </button>
+                </button> */}
               </div>
-              
+
               <div className="space-y-4">
                 {activePolls.map((poll) => (
                   <div key={poll.id} className="bg-white rounded-lg shadow-sm border p-6">
@@ -305,7 +316,7 @@ const UserDashboard = () => {
                               Already Voted
                             </button>
                           ) : (
-                            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <button onClick={()=>handleNavigate(poll._id)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                               Vote Now
                             </button>
                           )
@@ -352,35 +363,13 @@ const UserDashboard = () => {
                     <span className="text-xs">{userStatus.profile.address}</span>
                   </div>
                 </div>
-                <button className="w-full mt-4 bg-blue-50 text-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
+                <button onClick={()=> navigate("/user-profile")} className="w-full mt-4 bg-blue-50 text-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
                   Complete Profile
                 </button>
               </div>
             </div>
 
-            {/* Recent Notifications */}
-            <div className="bg-white rounded-lg shadow-sm border">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
-                  <Bell className="w-5 h-5 text-gray-400" />
-                </div>
-                <div className="space-y-3">
-                  {notifications.slice(0, 3).map((notification) => (
-                    <div key={notification.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="flex-1">
-                        <p className="text-sm text-gray-900">{notification.message}</p>
-                        <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button className="w-full mt-4 text-sm text-blue-600 hover:text-blue-800 font-medium">
-                  View All Notifications
-                </button>
-              </div>
-            </div>
+
 
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow-sm border">
@@ -401,6 +390,7 @@ const UserDashboard = () => {
                           ? 'hover:bg-gray-50 text-gray-700' 
                           : 'text-gray-400 cursor-not-allowed'
                       }`}
+                      onClick={()=>navigatingUser(item.name)}
                     >
                       <div className="flex items-center space-x-3">
                         <item.icon className="w-4 h-4" />
