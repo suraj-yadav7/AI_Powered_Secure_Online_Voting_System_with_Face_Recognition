@@ -5,5 +5,6 @@ export const api = {
   signup:`${base_url}/auth/register`,
   voter_register:`${base_url}/voter/register`,
   generic_fetch:`${base_url}/generic/fetch`,
-  update_user:`${base_url}/user/update`
+  update_user:`${base_url}/user/update`,
+  generic_count:`${base_url}/generic/fetch-count`
 };
