@@ -18,12 +18,19 @@ export const fetchRecords = async(req, res, next) =>{
       return res.status(200).json({success:true, message:"Single Record Fetched Successfully.", data:singleRecord})
     };
 
-    const records = await Model.find()
+    const limit = req.query.limit || 5
+    const page  = req.query.page  || 1
+    const skipRecord = (page-1)*limit
+
+    const records = await Model.find().skip(skipRecord).limit(limit)
+    const totalRecords = await Model.countDocuments()
+    const totalPages = Math.ceil(totalRecords/limit)
     if(!records){
       return res.status(400).json({success:false, message:"Model is empty."})
     };
 
-    return res.status(200).json({success:true, message:"Records fetched Successfully.", data:records})
+    return res.status(200).json({success:true, message:"Records fetched Successfully.",
+      data:{data:records, totalPages, totalRecords, limit, page}})
   }catch(error){
     next(error)
   }

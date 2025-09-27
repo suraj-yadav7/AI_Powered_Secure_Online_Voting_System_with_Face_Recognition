@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Eye, User, Calendar, Mail, Phone, MapPin } from 'lucide-react';
+import axios from 'axios';
+import { api } from '@/utils/endpointUrls';
+import toast from 'react-hot-toast';
 
 const UserApproval = () => {
   // Sample data for pending requests
@@ -49,18 +52,20 @@ const UserApproval = () => {
       documents: ["Driver's License"]
     }
   ]);
+  const [userData, setUserData] = useState(null)
+  const [totalUsers, setTotalUsers] = useState(0)
 
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const handleApprove = (id) => {
-    setRequests(prev => prev.map(req => 
+    setRequests(prev => prev.map(req =>
       req.id === id ? { ...req, status: 'approved' } : req
     ));
   };
 
   const handleReject = (id) => {
-    setRequests(prev => prev.map(req => 
+    setRequests(prev => prev.map(req =>
       req.id === id ? { ...req, status: 'rejected' } : req
     ));
   };
@@ -72,15 +77,43 @@ const UserApproval = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'approved': return 'text-green-600 bg-green-100';
-      case 'rejected': return 'text-red-600 bg-red-100';
-      default: return 'text-yellow-600 bg-yellow-100';
+      case true: return 'text-green-600 bg-green-100';
+      case false: return 'text-red-600 bg-red-100';
+      default: return 'text-yellow-900 bg-yellow-100';
     }
   };
 
   const getTypeColor = (type) => {
-    return type === 'Voter Registration' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
+    return type === 'user' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
   };
+
+  /** Fetch User-Data */
+  const fetchUsers = async(page=1, limit=5)=>{
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=user&page=${page}&limit=${limit}`)
+      if(!response.data){
+        toast.error("No Valid Response From Server.")
+        return
+      };
+      console.log("Response userData: ", response)
+      const {data, message} = response.data
+      if(data.data.length===0){
+        toast.error("No Record Found.")
+        return
+      };
+
+      toast.success(message)
+      setUserData(data.data)
+      setTotalUsers(data.totalRecords)
+    }catch(error){
+      console.log("Error Occured While Fetching User: ", error)
+    }
+  };
+
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -94,27 +127,27 @@ const UserApproval = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-gray-900">{requests.filter(r => r.status === 'pending').length}</div>
-            <div className="text-sm text-gray-600">Pending</div>
+            <div className="text-2xl font-bold text-gray-900">{totalUsers}</div>
+            <div className="text-sm text-gray-600">Total User</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-green-600">{requests.filter(r => r.status === 'approved').length}</div>
-            <div className="text-sm text-gray-600">Approved</div>
+            <div className="text-2xl font-bold text-green-600">{userData && userData.filter(r => r.isActive).length}</div>
+            <div className="text-sm text-gray-600">Active</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-red-600">{requests.filter(r => r.status === 'rejected').length}</div>
-            <div className="text-sm text-gray-600">Rejected</div>
+            <div className="text-2xl font-bold text-gray-900">{userData && userData.filter(r => !r.isActive).length}</div>
+            <div className="text-sm text-gray-600">UnActive</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-gray-900">{requests.length}</div>
-            <div className="text-sm text-gray-600">Total</div>
+            <div className="text-2xl font-bold text-red-600">{userData && userData.filter(r => r.isDeleted).length}</div>
+            <div className="text-sm text-gray-600">Deleted</div>
           </div>
         </div>
 
         {/* Request Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {requests.map((request) => (
-            <div key={request.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+          {userData&&userData.map((data) => (
+            <div key={data.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -123,18 +156,15 @@ const UserApproval = () => {
                       <User className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{request.name}</h3>
-                      <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}>
-                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                      </span>
+                      <h3 className="text-lg font-semibold text-gray-900">{data.first_name} {data.last_name}</h3>
                     </div>
                   </div>
                 </div>
 
                 {/* Request Type */}
                 <div className="mb-4">
-                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(request.type)}`}>
-                    {request.type}
+                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(data.profile_type)}`}>
+                    {data.profile_type}
                   </span>
                 </div>
 
@@ -142,49 +172,38 @@ const UserApproval = () => {
                 <div className="space-y-2 mb-4 text-sm text-gray-600">
                   <div className="flex items-center">
                     <Mail className="w-4 h-4 mr-2" />
-                    <span className="truncate">{request.email}</span>
+                    <span className="truncate">{data.email}</span>
                   </div>
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 mr-2" />
-                    <span>{request.phone}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span className="truncate">{request.address}</span>
+                    <span>{data.phone}</span>
                   </div>
                   <div className="flex items-center">
                     <Calendar className="w-4 h-4 mr-2" />
-                    <span>{new Date(request.dateSubmitted).toLocaleDateString()}</span>
+                    <span>{new Date(data.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
-
-                {/* Documents */}
-                <div className="mb-4">
-                  <div className="text-sm text-gray-500 mb-1">Documents:</div>
-                  <div className="text-sm text-gray-700">{request.documents.join(', ')}</div>
-                </div>
-
                 {/* Action Buttons */}
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => viewDetails(request)}
+                    onClick={() => viewDetails(data)}
                     className="flex-1 flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     <Eye className="w-4 h-4 mr-1" />
                     View
                   </button>
                   
-                  {request.status === 'pending' && (
+                  {data.status === 'pending' && (
                     <>
                       <button
-                        onClick={() => handleApprove(request.id)}
+                        onClick={() => handleApprove(data.id)}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
                       >
                         <CheckCircle className="w-4 h-4 mr-1" />
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(request.id)}
+                        onClick={() => handleReject(data.id)}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
                       >
                         <XCircle className="w-4 h-4 mr-1" />
@@ -219,9 +238,9 @@ const UserApproval = () => {
                       <User className="w-8 h-8 text-gray-600" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900">{selectedRequest.name}</h3>
-                      <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(selectedRequest.type)}`}>
-                        {selectedRequest.type}
+                      <h3 className="text-xl font-semibold text-gray-900">{selectedRequest.first_name}</h3>
+                      <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(selectedRequest.profile_type)}`}>
+                        {selectedRequest.profile_type}
                       </span>
                     </div>
                   </div>
@@ -235,34 +254,19 @@ const UserApproval = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                       <p className="text-gray-900">{selectedRequest.phone}</p>
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                      <p className="text-gray-900">{selectedRequest.address}</p>
-                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Date Submitted</label>
-                      <p className="text-gray-900">{new Date(selectedRequest.dateSubmitted).toLocaleDateString()}</p>
+                      <p className="text-gray-900">{new Date(selectedRequest.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                      <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(selectedRequest.status)}`}>
-                        {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
+                      <span className={`inline-block px-3 py-1 text-sm font-bold  rounded-full ${getStatusColor(selectedRequest.isActive)}`}>
+                        {selectedRequest.isActive ? "active":"Not Active"}
                       </span>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Submitted Documents</label>
-                    <div className="space-y-2">
-                      {selectedRequest.documents.map((doc, index) => (
-                        <div key={index} className="flex items-center p-2 bg-gray-50 rounded border">
-                          <span className="text-gray-900">{doc}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {selectedRequest.status === 'pending' && (
+                  {selectedRequest.isActive === false && (
                     <div className="flex space-x-3 pt-4 border-t">
                       <button
                         onClick={() => {
