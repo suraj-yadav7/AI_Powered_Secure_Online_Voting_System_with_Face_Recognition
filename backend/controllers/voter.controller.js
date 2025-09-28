@@ -35,6 +35,23 @@ export const registerVoter = async(req, res, next) =>{
   }
 };
 
+export const adminAction = async(req, res, next) => {
+  try{
+    const {id, actionType} = req.body
+    if(!id || !actionType){
+      return res.status(400).json({status:false, message:"Required valid field 'id, actionType'."})
+    };
+
+    const checkRecord = await Voter.findById(id)
+    if(!checkRecord){
+      return res.status(404).json({status:false, message:"record not found."})
+    }
+    return res.status(200).json({status:true, message:"Found record.",data:checkRecord})
+  }catch(error){
+    next(error)
+  }
+}
+
 /** ##################################################################################################################### */
 /** Update Existing Voter  */
 export const updateVoter = async(req, res, next) =>{
