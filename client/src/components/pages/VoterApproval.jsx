@@ -1,56 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Eye, User, Calendar, Mail, Phone, MapPin } from 'lucide-react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { api } from '@/utils/endpointUrls';
 
 const VoterApproval = () => {
   // Sample data for pending requests
-  const [requests, setRequests] = useState([
-    {
-      id: 2,
-      name: "Sarah Wilson",
-      email: "sarah.w@email.com",
-      phone: "+91 8765432109",
-      type: "User Signup",
-      address: "456 Park Ave, Mumbai",
-      dateSubmitted: "2025-01-12",
-      status: "pending",
-      documents: ["ID Proof"]
-    },
-    {
-      id: 3,
-      name: "Raj Kumar",
-      email: "raj.kumar@email.com",
-      phone: "+91 7654321098",
-      type: "Voter Registration",
-      address: "789 Civil Lines, Bangalore",
-      dateSubmitted: "2025-01-14",
-      status: "pending",
-      documents: ["Aadhaar Card", "Passport", "Utility Bill"]
-    },
-    {
-      id: 4,
-      name: "Priya Sharma",
-      email: "priya.s@email.com",
-      phone: "+91 6543210987",
-      type: "User Signup",
-      address: "321 MG Road, Chennai",
-      dateSubmitted: "2025-01-13",
-      status: "pending",
-      documents: ["Driver's License"]
-    }
-  ]);
+  const [requests, setRequests] = useState(null);
 
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const handleApprove = (id) => {
     setRequests(prev => prev.map(req => 
-      req.id === id ? { ...req, status: 'approved' } : req
+      req._id === id ? { ...req, status: 'approved' } : req
     ));
   };
 
   const handleReject = (id) => {
     setRequests(prev => prev.map(req => 
-      req.id === id ? { ...req, status: 'rejected' } : req
+      req._id === id ? { ...req, status: 'rejected' } : req
     ));
   };
 
@@ -71,6 +40,35 @@ const VoterApproval = () => {
     return type === 'Voter Registration' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
   };
 
+  const getVoterData = async(page=1)=>{
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=voter&page=${page}`)
+      if(!response.data){
+        toast.error("No Valid Response")
+      };
+      toast.success(response.data.message)
+      setRequests(response.data.data?.data)
+    }catch(error){
+      console.log("Error occured while fetching voter data: ", error)
+    }
+  };
+
+  const adminActionHandler = async(id, actionType)=>{
+    try{
+      const response = await axios.post(api.admin_action_voter, {id, actionType})
+      if(!response.data){
+        return res.status(400).json({status:false, message:"Invalid response from server."})
+      };
+      toast.success(response.data.message)
+      await getVoterData()
+    }catch(error){
+      console.log("Error occured while admin action: ", error)
+    }
+  };
+
+  useEffect(() => {
+    getVoterData()
+  }, [])
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -81,17 +79,18 @@ const VoterApproval = () => {
         </div>
 
         {/* Stats Cards */}
+        {requests &&
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="text-2xl font-bold text-gray-900">{requests.filter(r => r.status === 'pending').length}</div>
             <div className="text-sm text-gray-600">Pending</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-green-600">{requests.filter(r => r.status === 'approved').length}</div>
-            <div className="text-sm text-gray-600">Approved</div>
+            <div className="text-2xl font-bold text-green-600">{ requests.filter(r => r.status === 'approved').length}</div>
+            <div className="text-sm text-gray-600" >Approved</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-red-600">{requests.filter(r => r.status === 'rejected').length}</div>
+            <div className="text-2xl font-bold text-red-600">{ requests.filter(r => r.status === 'rejected').length}</div>
             <div className="text-sm text-gray-600">Rejected</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -99,11 +98,12 @@ const VoterApproval = () => {
             <div className="text-sm text-gray-600">Total</div>
           </div>
         </div>
+        }
 
         {/* Request Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {requests.map((request) => (
-            <div key={request.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+          {requests && requests.map((request) => (
+            <div key={request._id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -112,7 +112,7 @@ const VoterApproval = () => {
                       <User className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{request.name}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{request.first_name} {request.last_name}</h3>
                       <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}>
                         {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                       </span>
@@ -122,8 +122,8 @@ const VoterApproval = () => {
 
                 {/* Request Type */}
                 <div className="mb-4">
-                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(request.type)}`}>
-                    {request.type}
+                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor("random")}`}>
+                    Voter Registration
                   </span>
                 </div>
 
@@ -139,18 +139,22 @@ const VoterApproval = () => {
                   </div>
                   <div className="flex items-center">
                     <MapPin className="w-4 h-4 mr-2" />
-                    <span className="truncate">{request.address}</span>
+                    <div className='flex flex-col'>
+                      <span className="truncate">{request.address.house_no}, {request.address.locality}</span>
+                      <span className="truncate">{request.address.mandal}, {request.address.district}</span>
+                      <span className="truncate">{request.address.city}, {request.address.state}, {request.address.pincode}.</span>
+                    </div>
                   </div>
                   <div className="flex items-center">
                     <Calendar className="w-4 h-4 mr-2" />
-                    <span>{new Date(request.dateSubmitted).toLocaleDateString()}</span>
+                    <span>{new Date(request.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
 
                 {/* Documents */}
                 <div className="mb-4">
-                  <div className="text-sm text-gray-500 mb-1">Documents:</div>
-                  <div className="text-sm text-gray-700">{request.documents.join(', ')}</div>
+                  <div className="text-sm text-gray-500 mb-1">Aadhar Number:</div>
+                  <div className="text-sm text-gray-700">{request.aadhar_number}</div>
                 </div>
 
                 {/* Action Buttons */}
@@ -162,18 +166,18 @@ const VoterApproval = () => {
                     <Eye className="w-4 h-4 mr-1" />
                     View
                   </button>
-                  
+
                   {request.status === 'pending' && (
                     <>
                       <button
-                        onClick={() => handleApprove(request.id)}
+                        onClick={()=>adminActionHandler(request._id, "approved")}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
                       >
                         <CheckCircle className="w-4 h-4 mr-1" />
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(request.id)}
+                        onClick={()=>adminActionHandler(request._id, "rejected")}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
                       >
                         <XCircle className="w-4 h-4 mr-1" />
@@ -208,9 +212,9 @@ const VoterApproval = () => {
                       <User className="w-8 h-8 text-gray-600" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900">{selectedRequest.name}</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">{selectedRequest.first_name} {selectedRequest.last_name}</h3>
                       <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(selectedRequest.type)}`}>
-                        {selectedRequest.type}
+                        voter
                       </span>
                     </div>
                   </div>
@@ -226,11 +230,11 @@ const VoterApproval = () => {
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                      <p className="text-gray-900">{selectedRequest.address}</p>
+                      <p className="text-gray-900">{selectedRequest.address.house_no}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Date Submitted</label>
-                      <p className="text-gray-900">{new Date(selectedRequest.dateSubmitted).toLocaleDateString()}</p>
+                      <p className="text-gray-900">{new Date(selectedRequest.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -242,20 +246,14 @@ const VoterApproval = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Submitted Documents</label>
-                    <div className="space-y-2">
-                      {selectedRequest.documents.map((doc, index) => (
-                        <div key={index} className="flex items-center p-2 bg-gray-50 rounded border">
-                          <span className="text-gray-900">{doc}</span>
-                        </div>
-                      ))}
-                    </div>
+                      <span className="text-gray-900">Aadhar No: {selectedRequest.aadhar_number}</span>
                   </div>
 
                   {selectedRequest.status === 'pending' && (
                     <div className="flex space-x-3 pt-4 border-t">
                       <button
                         onClick={() => {
-                          handleApprove(selectedRequest.id);
+                          handleApprove(selectedRequest._id);
                           setShowModal(false);
                         }}
                         className="flex-1 flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
@@ -265,7 +263,7 @@ const VoterApproval = () => {
                       </button>
                       <button
                         onClick={() => {
-                          handleReject(selectedRequest.id);
+                          handleReject(selectedRequest._id);
                           setShowModal(false);
                         }}
                         className="flex-1 flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"

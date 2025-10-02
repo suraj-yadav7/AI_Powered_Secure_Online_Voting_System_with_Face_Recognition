@@ -53,7 +53,7 @@ const AdminDashboard = () => {
   const getUserCounts = async()=>{
     try{
       const urls = [`${api.generic_count}?data=user`, `${api.generic_count}?data=voter`,
-        `${api.generic_count}?data=voter&approved=true`, `${api.generic_count}?data=election&result=false`]
+        `${api.generic_count}?data=voter&status=pending`, `${api.generic_count}?data=election&result=false`]
       const response = await Promise.all(
         urls.map((url) =>  axios.get(url)
             .then((res) => res.data.data)

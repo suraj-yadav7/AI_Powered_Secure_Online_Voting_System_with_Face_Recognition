@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Vote, Calendar, Users, Trophy, Search, Settings, CheckCircle, XCircle, Edit, Trash2 } from "lucide-react";
+import axios from 'axios';
+import { api } from '@/utils/endpointUrls';
+import toast from 'react-hot-toast';
 
 const Election = () => {
   // Mock nominees data (this would come from your nominees API)
-  const [availableNominees] = useState([
+  const [availableNominees, setAvailableNominees] = useState([
     { _id: "1", full_name: "John Smith", political_party: "Democratic", constituency: "District 1" },
     { _id: "2", full_name: "Sarah Johnson", political_party: "Republican", constituency: "District 2" },
     { _id: "3", full_name: "Michael Brown", political_party: "Independent", constituency: "District 1" },
@@ -55,7 +58,7 @@ const Election = () => {
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
   const electionTypes = [
-    "Presidential", "Congressional", "Senate", "Gubernatorial", 
+    "Presidential", "Congressional", "Senate", "Gubernatorial",
     "Mayoral", "Local", "Primary", "Special", "Referendum"
   ];
 
@@ -147,9 +150,9 @@ const Election = () => {
 
   const filteredElections = elections.filter(election => {
     const matchesSearch = election.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         election.type.toLowerCase().includes(searchTerm.toLowerCase());
+                        election.type.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || election.type === filterType;
-    
+
     return matchesSearch && matchesType;
   });
 
@@ -171,6 +174,36 @@ const Election = () => {
     };
     return colors[type] || "bg-gray-100 text-gray-700";
   };
+
+  const fetchElectionData = async()=>{
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=nominee`)
+      if(!response.data){
+        toast.error("No Valid Response From Server")
+      };
+      setAvailableNominees(response.data.data.data)
+      toast.success(response.data.message)
+    }catch(error){
+      next(error)
+    }
+  };
+
+
+  const getElectionCount = async()=>{
+    try{
+      const urls = [`${api.generic_count}?data=election`, `${api.generic_count}?data=election&result=false`,
+        `${api.generic_count}?data=election&result=true`]
+      const response = await axios.get(`${api.generic_count}?data=election`)
+      console.log("Election: ", response)
+    }catch(error){
+      console.log("Error occured while fetching election count: ", error)
+    }
+  };
+  useEffect(()=> {
+    getElectionCount()
+    fetchElectionData()
+  },[])
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-cyan-50 py-8 px-4">

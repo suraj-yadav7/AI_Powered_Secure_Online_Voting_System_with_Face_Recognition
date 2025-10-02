@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+/** ##################################################################################################################### */
+/** Generic Fetch Records */
 export const fetchRecords = async(req, res, next) =>{
   try{
     const {data, id} = req.query
@@ -36,6 +38,8 @@ export const fetchRecords = async(req, res, next) =>{
   }
 };
 
+/** ##################################################################################################################### */
+/** Generic Fetch Records Count. */
 export const fetchCount = async(req, res, next) =>{
   try{
     const {data, ...query} = req.query
@@ -45,7 +49,7 @@ export const fetchCount = async(req, res, next) =>{
     };
     const Model = new mongoose.model(data)
     const getCount = await Model.countDocuments(query)
-    if(!getCount){
+    if(!getCount && getCount !== 0){
       return res.status(404).json({status:false, message:"Record Not Found."})
     };
     return res.status(200).json({status:true, message:"Count Fetched Successfully.", data:getCount})

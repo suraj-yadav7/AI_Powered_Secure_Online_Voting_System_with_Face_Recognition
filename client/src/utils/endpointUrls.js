@@ -6,5 +6,6 @@ export const api = {
   voter_register:`${base_url}/voter/register`,
   generic_fetch:`${base_url}/generic/fetch`,
   update_user:`${base_url}/user/update`,
-  generic_count:`${base_url}/generic/fetch-count`
+  generic_count:`${base_url}/generic/fetch-count`,
+  admin_action_voter:`${base_url}/voter/admin-action`
 };
