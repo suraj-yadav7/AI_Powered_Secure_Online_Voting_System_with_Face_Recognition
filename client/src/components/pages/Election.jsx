@@ -25,30 +25,13 @@ const Election = () => {
     { _id: "6", full_name: "Lisa Anderson", political_party: "Democratic", constituency: "District 3" }
   ]);
 
-  const [elections, setElections] = useState([
-    {
-      _id: "1",
-      name: "2024 Presidential Election",
-      type: "Presidential",
-      total_votes: 15420,
-      result: true,
-      nominees: ["1", "2", "3"],
-      createdAt: "2025-01-15T10:30:00Z"
-    },
-    {
-      _id: "2", 
-      name: "2024 Local Council Election",
-      type: "Local",
-      total_votes: 8950,
-      result: false,
-      nominees: ["4", "5", "6"],
-      createdAt: "2024-02-01T14:20:00Z"
-    }
-  ]);
+  const [electionCount, setElectionCount]=useState({totalElection:0, activeElection:0, completedElection:0})
+  const [elections, setElections] = useState(null);
 
   const [newElection, setNewElection] = useState({
     name: "",
     type: "",
+    enddate:0,
     nominees: []
   });
 
@@ -62,6 +45,7 @@ const Election = () => {
     "Mayoral", "Local", "Primary", "Special", "Referendum"
   ];
 
+  console.log("new-election: ", newElection)
   const showAlert = (message, type = "success") => {
     setAlert({ show: true, message, type });
     setTimeout(() => setAlert({ show: false, message: "", type: "" }), 3000);
@@ -83,8 +67,9 @@ const Election = () => {
     }));
   };
 
+  /** Create New Election Method */
   const handleSubmit = async () => {
-    setIsSubmitting(true);
+    // setIsSubmitting(true);
 
     // Validation
     if (!newElection.name.trim()) {
@@ -106,31 +91,30 @@ const Election = () => {
     }
 
     // Check for duplicate name
-    const existingElection = elections.find(
-      election => election.name.toLowerCase() === newElection.name.toLowerCase()
+    const existingElection = elections && elections.find(
+      election => election?.name.toLowerCase() === newElection.name.toLowerCase()
     );
 
     if (existingElection) {
       showAlert("An election with this name already exists", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
-    // Simulate API call
-    setTimeout(() => {
-      const election = {
-        _id: Date.now().toString(),
-        ...newElection,
-        total_votes: 0,
-        result: false,
-        createdAt: new Date().toISOString()
-      };
+    // Create API call
+    const response = await axios.post(`${api.create_new_election}`, newElection)
+    console.log("Response create: ", response)
+    if(!response.data){
+      toast.error("No Valid Response From Server")
+      return
+    };
 
-      setElections(prev => [election, ...prev]);
-      setNewElection({ name: "", type: "", nominees: [] });
-      showAlert("Election created successfully!", "success");
-      setIsSubmitting(false);
-    }, 1000);
+    setElections((prev) => ([...prev, response.data.data]))
+    toast.success(response.data.message)
+    setNewElection({ name: "", type: "", nominees: [], enddate:0});
+    showAlert("Election created successfully!", "success");
+    setIsSubmitting(false);
+    fetchElectionData()
   };
 
   const handleDelete = (id, name) => {
@@ -148,13 +132,15 @@ const Election = () => {
     ));
   };
 
-  const filteredElections = elections.filter(election => {
-    const matchesSearch = election.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        election.type.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredElections = elections && elections.filter(election => {
+    const matchesSearch = election?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        election?.type?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || election.type === filterType;
 
     return matchesSearch && matchesType;
   });
+
+  console.log("election state: ", elections)
 
   const getNomineesByIds = (nomineeIds) => {
     return availableNominees.filter(nominee => nomineeIds.includes(nominee._id));
@@ -175,7 +161,7 @@ const Election = () => {
     return colors[type] || "bg-gray-100 text-gray-700";
   };
 
-  const fetchElectionData = async()=>{
+  const fetchNomineeData = async()=>{
     try{
       const response = await axios.get(`${api.generic_fetch}?data=nominee`)
       if(!response.data){
@@ -188,19 +174,42 @@ const Election = () => {
     }
   };
 
+  /** Fetch Election Data Method */
+  const fetchElectionData = async() => {
+    try{
+      const response = await axios.get(`${api.generic_fetch}?data=election`)
+      console.log("Response election data: ", response)
+      if(!response.data){
+        toast.error("No valid response from server")
+      };
+      const {data} = response.data
+      toast.success("Election Data Fetched Successfully.")
+      setElections(data.data)
+    }catch(error){
+      console.log("Error occured while fetching election data: ", error)
+    }
+  };
+
 
   const getElectionCount = async()=>{
     try{
-      const urls = [`${api.generic_count}?data=election`, `${api.generic_count}?data=election&result=false`,
-        `${api.generic_count}?data=election&result=true`]
-      const response = await axios.get(`${api.generic_count}?data=election`)
-      console.log("Election: ", response)
+      const urls = [`${api.generic_count}?data=election`, `${api.generic_count}?data=election&result=false`]
+      const response = await Promise.all(
+       urls.map((url) => axios.get(url)
+          .then((res) => res.data.data)))
+      console.log("Electionsss: ", response)
+      setElectionCount((prev) => ({...prev, totalElection:response[0], activeElection:response[1],
+        completedElection:response[0]-response[1]}))
     }catch(error){
       console.log("Error occured while fetching election count: ", error)
     }
   };
+
+
+
   useEffect(()=> {
     getElectionCount()
+    fetchNomineeData()
     fetchElectionData()
   },[])
 
@@ -219,26 +228,26 @@ const Election = () => {
           </CardHeader>
         </Card>
 
-                {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-blue-100">Total Elections</p>
-                  <p className="text-2xl font-bold">{elections.length}</p>
+                  <p className="text-2xl font-bold">{electionCount.totalElection}</p>
                 </div>
                 <Vote className="w-8 h-8 text-blue-200" />
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100">Active Elections</p>
-                  <p className="text-2xl font-bold">{elections.filter(e => !e.result).length}</p>
+                  <p className="text-2xl font-bold">{electionCount.activeElection}</p>
                 </div>
                 <Settings className="w-8 h-8 text-green-200" />
               </div>
@@ -250,24 +259,14 @@ const Election = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-purple-100">Completed Elections</p>
-                  <p className="text-2xl font-bold">{elections.filter(e => e.result).length}</p>
+                  <p className="text-2xl font-bold">{electionCount.completedElection}</p>
                 </div>
                 <Trophy className="w-8 h-8 text-purple-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100">Total Votes Cast</p>
-                  <p className="text-2xl font-bold">{elections.reduce((sum, e) => sum + e.total_votes, 0).toLocaleString()}</p>
-                </div>
-                <Users className="w-8 h-8 text-orange-200" />
-              </div>
-            </CardContent>
-          </Card>
+
         </div>
 
         {/* Alert */}
@@ -355,6 +354,16 @@ const Election = () => {
                     Selected: {newElection.nominees.length} nominees
                   </p>
                 </div>
+                <div>
+                  <Label htmlFor="electionName">Election Enddate*</Label>
+                  <Input
+                    id="electionDeadline"
+                    type="date"
+                    value={newElection.enddate}
+                    onChange={(e) => handleInputChange('enddate', e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
 
                 <Button 
                   onClick={handleSubmit}
@@ -380,7 +389,7 @@ const Election = () => {
               <CardTitle className="flex items-center justify-between text-blue-700">
                 <div className="flex items-center">
                   <Trophy className="w-5 h-5 mr-2" />
-                  Elections List ({filteredElections.length})
+                  Elections List ({filteredElections?.length})
                 </div>
               </CardTitle>
             </CardHeader>
@@ -419,13 +428,13 @@ const Election = () => {
 
               {/* Elections Grid */}
               <div className="space-y-4">
-                {filteredElections.length === 0 ? (
+                {filteredElections?.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <Vote className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p>No elections found</p>
                   </div>
                 ) : (
-                  filteredElections.map((election) => (
+                  filteredElections && filteredElections.map((election) => (
                     <Card key={election._id} className="hover:shadow-md transition-shadow border-l-2 border-l-indigo-400">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between">
@@ -480,7 +489,8 @@ const Election = () => {
                               </div>
                             </div>
                           </div>
-
+                      {/* Edit, Delete options */}
+                        {/* 
                           <div className="flex flex-col space-y-2 ml-4">
                             <Button size="sm" variant="outline">
                               <Edit className="w-3 h-3" />
@@ -501,12 +511,16 @@ const Election = () => {
                             >
                               {election.result ? <XCircle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
                             </Button>
-                          </div>
+                          </div> */}
                         </div>
 
                         <div className="mt-4 pt-4 border-t border-gray-100">
+                          <p className="text-xs text-gray-500 my-2">
+                            <span className='px-2'>Created:</span> {new Date(election.createdAt).toLocaleDateString()} at {new Date(election.createdAt).toLocaleTimeString()}
+                          </p>
+
                           <p className="text-xs text-gray-500">
-                            Created: {new Date(election.createdAt).toLocaleDateString()} at {new Date(election.createdAt).toLocaleTimeString()}
+                            <span className='bg-yellow-200 px-2 rounded-md'>Ends At:</span> {new Date(election.enddate).toLocaleDateString()} at {new Date(election.enddate).toLocaleTimeString()}
                           </p>
                         </div>
                       </CardContent>

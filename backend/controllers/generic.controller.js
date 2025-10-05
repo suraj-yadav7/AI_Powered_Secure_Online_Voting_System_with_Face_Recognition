@@ -24,7 +24,7 @@ export const fetchRecords = async(req, res, next) =>{
     const page  = req.query.page  || 1
     const skipRecord = (page-1)*limit
 
-    const records = await Model.find().skip(skipRecord).limit(limit)
+    const records = await Model.find().skip(skipRecord).limit(limit).sort({"createdAt":-1})
     const totalRecords = await Model.countDocuments()
     const totalPages = Math.ceil(totalRecords/limit)
     if(!records){

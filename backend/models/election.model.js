@@ -22,7 +22,7 @@ const electionSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:"nominee",
   }],
-  deadline:{
+  enddate:{
     type:Date,
     required:true
   }
