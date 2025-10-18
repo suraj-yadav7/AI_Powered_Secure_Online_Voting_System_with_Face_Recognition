@@ -26,7 +26,7 @@ export const registerVoter = async(req, res, next) =>{
     })
     await newVoter.save()
 
-    await new User.findOneAndUpdate({email:req.body.email}, {
+    await User.findOneAndUpdate({email:req.body.email}, {
       $set:{voterId:newVoter.id}}, {new:true, runValidators:true})
 
     return res.status(200).json({success:true, message:"Voter Profile Created Successfully.", data:newVoter})

@@ -2,13 +2,16 @@ import User from "../models/user.model.js";
 
 export const updateUser = async(req, res, next) => {
   try{
-    const {id} = req.body
+    const {id, ...payload} = req.body
+    console.log("id: ", req.body)
+    console.log("id: ", id)
+    console.log("payload: ", payload)
     if(!id){
       return res.status(400).json({success:false, message:"Required valid field 'id'."})
     };
 
     const updateUserRecord = await User.findByIdAndUpdate(id, {
-      $set:{...req.body}}, {new:true, runValidators:true})
+      $set:{...payload}}, {new:true, runValidators:true})
     if(!updateUserRecord){
       return res.status(404).json({success:false, message:"User Record Not Found."})
     };

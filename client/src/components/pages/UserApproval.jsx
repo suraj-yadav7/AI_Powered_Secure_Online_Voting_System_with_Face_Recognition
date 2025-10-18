@@ -58,19 +58,34 @@ const UserApproval = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleApprove = (id) => {
+  const handleApprove = async(id) => {
     setRequests(prev => prev.map(req =>
       req.id === id ? { ...req, status: 'approved' } : req
     ));
+    try{
+      console.log("idsd: ", id)
+      const response = await axios.put(api.update_user, {id:id, isActive:true})
+      console.log("Response approve: ", response.data)
+    }catch(error){
+      console.log("Error occured while approving user: ", error)
+    }
   };
 
-  const handleReject = (id) => {
+  const handleReject = async(id) => {
     setRequests(prev => prev.map(req =>
       req.id === id ? { ...req, status: 'rejected' } : req
     ));
+    try{
+      console.log("idsd: ", id)
+      const response = await axios.put(api.update_user, {id:id, rejected:true})
+      console.log("Response approve: ", response.data)
+    }catch(error){
+      console.log("Error occured while approving user: ", error)
+    }
   };
 
   const viewDetails = (request) => {
+    console.log("dd: ", request)
     setSelectedRequest(request);
     setShowModal(true);
   };
@@ -88,7 +103,7 @@ const UserApproval = () => {
   };
 
   /** Fetch User-Data */
-  const fetchUsers = async(page=1, limit=5)=>{
+  const fetchUsers = async(page=1, limit=15)=>{
     try{
       const response = await axios.get(`${api.generic_fetch}?data=user&page=${page}&limit=${limit}`)
       if(!response.data){
@@ -103,6 +118,7 @@ const UserApproval = () => {
       };
 
       toast.success(message)
+      // const userData = data.data.filter((elem) => !elem.rejected)
       setUserData(data.data)
       setTotalUsers(data.totalRecords)
     }catch(error){
@@ -125,7 +141,7 @@ const UserApproval = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="text-2xl font-bold text-gray-900">{totalUsers}</div>
             <div className="text-sm text-gray-600">Total User</div>
@@ -135,8 +151,12 @@ const UserApproval = () => {
             <div className="text-sm text-gray-600">Active</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="text-2xl font-bold text-gray-900">{userData && userData.filter(r => !r.isActive).length}</div>
+            <div className="text-2xl font-bold text-yellow-400">{userData && userData.filter(r => !r.isActive).length}</div>
             <div className="text-sm text-gray-600">UnActive</div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="text-2xl font-bold text-red-300">{userData && userData.filter(r => r.rejected).length}</div>
+            <div className="text-sm text-gray-600">Rejected</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="text-2xl font-bold text-red-600">{userData && userData.filter(r => r.isDeleted).length}</div>
@@ -147,8 +167,7 @@ const UserApproval = () => {
         {/* Request Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {userData&&userData.map((data) => (
-            <div key={data.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-              <div className="p-6">
+            <div key={data.id} className={`bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow`} >              <div className="p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center">
@@ -163,8 +182,11 @@ const UserApproval = () => {
 
                 {/* Request Type */}
                 <div className="mb-4">
-                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getTypeColor(data.profile_type)}`}>
+                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full mr-2 ${getTypeColor(data.profile_type)}`}>
                     {data.profile_type}
+                  </span>
+                  <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${data?.rejected?"bg-red-100 text-red-600": data.isActive?"bg-green-100 text-green-600":data.isDeleted?"bg-red-200 text-red-800":"bg-yellow-100 text-yellow-600"} `}>
+                    {data?.rejected?"Rejected": data.isActive?"Active":data.isDeleted?"Deleted":"Not Active"}
                   </span>
                 </div>
 
@@ -193,17 +215,17 @@ const UserApproval = () => {
                     View
                   </button>
                   
-                  {data.status === 'pending' && (
+                  {data.isActive === false && data?.rejected === false &&(
                     <>
                       <button
-                        onClick={() => handleApprove(data.id)}
+                        onClick={() => handleApprove(data._id)}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
                       >
                         <CheckCircle className="w-4 h-4 mr-1" />
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(data.id)}
+                        onClick={() => handleReject(data._id)}
                         className="flex-1 flex items-center justify-center px-3 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
                       >
                         <XCircle className="w-4 h-4 mr-1" />
@@ -261,12 +283,12 @@ const UserApproval = () => {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                       <span className={`inline-block px-3 py-1 text-sm font-bold  rounded-full ${getStatusColor(selectedRequest.isActive)}`}>
-                        {selectedRequest.isActive ? "active":"Not Active"}
+                        {selectedRequest?.rejected? "Rejected": selectedRequest.isActive ? "active":"Not Active"}
                       </span>
                     </div>
                   </div>
 
-                  {selectedRequest.isActive === false && (
+                  {selectedRequest.isActive === false && selectedRequest?.rejected === false && (
                     <div className="flex space-x-3 pt-4 border-t">
                       <button
                         onClick={() => {

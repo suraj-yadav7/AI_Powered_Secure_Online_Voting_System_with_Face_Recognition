@@ -43,7 +43,10 @@ const UserSchema = new mongoose.Schema({
   },
   voterId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:"user"
+    ref:"voter"
+  },
+  rejected:{
+    type:Boolean,
   }
 }, {timestamps:true})
 
