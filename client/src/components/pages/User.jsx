@@ -14,60 +14,7 @@ import { api } from '@/utils/endpointUrls';
 import toast from 'react-hot-toast';
 
 const User = () => {
-  const [users, setUsers] = useState([
-    {
-      _id: "1",
-      first_name: "John",
-      last_name: "Doe",
-      email: "john.doe@email.com",
-      phone: "+1-555-0123",
-      gender: "male",
-      isDeleted: false,
-      isActive: true,
-      profile_type: "user",
-      createdAt: "2024-01-15T10:30:00Z",
-      updatedAt: "2024-01-20T14:30:00Z"
-    },
-    {
-      _id: "2",
-      first_name: "Sarah",
-      last_name: "Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1-555-0124",
-      gender: "female",
-      isDeleted: false,
-      isActive: false,
-      profile_type: "admin",
-      createdAt: "2024-01-16T11:20:00Z",
-      updatedAt: "2024-01-18T09:15:00Z"
-    },
-    {
-      _id: "3",
-      first_name: "Michael",
-      last_name: "Brown",
-      email: "michael.brown@email.com",
-      phone: "+1-555-0125",
-      gender: "male",
-      isDeleted: true,
-      isActive: false,
-      profile_type: "user",
-      createdAt: "2024-01-17T09:15:00Z",
-      updatedAt: "2024-01-19T16:45:00Z"
-    },
-    {
-      _id: "4",
-      first_name: "Emily",
-      last_name: "Davis",
-      email: "emily.davis@email.com",
-      phone: "+1-555-0126",
-      gender: "female",
-      isDeleted: false,
-      isActive: true,
-      profile_type: "user",
-      createdAt: "2024-01-18T13:45:00Z",
-      updatedAt: "2024-01-21T11:30:00Z"
-    }
-  ]);
+  const [users, setUsers] = useState(null);
 
   const [newUser, setNewUser] = useState({
     first_name: "",
@@ -117,46 +64,46 @@ const User = () => {
     setIsSubmitting(true);
 
     // Validation
-    if (!newUser.first_name.trim() || !newUser.last_name.trim()) {
+    if(!newUser.first_name.trim() || !newUser.last_name.trim()){
       showAlert("First name and last name are required", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
-    if (!validateEmail(newUser.email)) {
+    if(!validateEmail(newUser.email)){
       showAlert("Please enter a valid email address", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
-    if (newUser.password.length < 6) {
+    if(newUser.password.length < 6){
       showAlert("Password must be at least 6 characters long", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
-    if (!validatePhone(newUser.phone)) {
+    if(!validatePhone(newUser.phone)){
       showAlert("Please enter a valid phone number", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
-    if (!newUser.gender) {
+    if(!newUser.gender){
       showAlert("Gender is required", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
     // Check for duplicate email
     const existingUser = users.find(
       user => user.email.toLowerCase() === newUser.email.toLowerCase() && !user.isDeleted
     );
 
-    if (existingUser) {
+    if(existingUser){
       showAlert("A user with this email already exists", "error");
       setIsSubmitting(false);
       return;
-    }
+    };
 
     // Simulate API call
     setTimeout(() => {
@@ -206,19 +153,19 @@ const User = () => {
     showAlert("User restored successfully", "success");
   };
 
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = Array.isArray(users) && users?.filter(user => {
     const matchesSearch = user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === "all" || 
-                         (filterStatus === "active" && user.isActive && !user.isDeleted) ||
-                         (filterStatus === "inactive" && !user.isActive && !user.isDeleted) ||
-                         (filterStatus === "deleted" && user.isDeleted);
-    
+                        user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filterStatus === "all" ||
+                        (filterStatus === "active" && user.isActive && !user.isDeleted) ||
+                        (filterStatus === "inactive" && !user.isActive && !user.isDeleted) ||
+                        (filterStatus === "deleted" && user.isDeleted);
+
     const matchesType = filterType === "all" || user.profile_type === filterType;
     const matchesDeletedFilter = showDeleted || !user.isDeleted;
-    
+
     return matchesSearch && matchesStatus && matchesType && matchesDeletedFilter;
   });
 
@@ -239,9 +186,11 @@ const User = () => {
   };
 
 
+  /** Fetch User Data */
   const getUsers = async()=>{
     try{
       const response = await axios.get(`${api.generic_fetch}?data=user`)
+      console.log("response: ", response)
       if(!response.data){
         toast.error("No Valid Response.")
         return
@@ -253,7 +202,7 @@ const User = () => {
         return
       }
       toast.success(message)
-      setUsers(data)
+      setUsers(data.data)
     }catch(error){
       console.log("Error occured while fetching user: ", error)
     }
@@ -262,6 +211,7 @@ const User = () => {
   useEffect(() => {
     getUsers()
   }, [])
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
@@ -293,7 +243,7 @@ const User = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-blue-100">Total Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => !u.isDeleted).length}</p>
+                  <p className="text-2xl font-bold">{Array.isArray(users) && users.filter(u => !u.isDeleted).length}</p>
                 </div>
                 <Users className="w-8 h-8 text-blue-200" />
               </div>
@@ -305,7 +255,7 @@ const User = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100">Active Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.isActive && !u.isDeleted).length}</p>
+                  <p className="text-2xl font-bold">{Array.isArray(users) && users.filter(u => u.isActive && !u.isDeleted).length}</p>
                 </div>
                 <UserCheck className="w-8 h-8 text-green-200" />
               </div>
@@ -317,7 +267,7 @@ const User = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-yellow-100">Inactive Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => !u.isActive && !u.isDeleted).length}</p>
+                  <p className="text-2xl font-bold">{Array.isArray(users)&&  users.filter(u => !u.isActive && !u.isDeleted).length}</p>
                 </div>
                 <UserX className="w-8 h-8 text-yellow-200" />
               </div>
@@ -329,7 +279,7 @@ const User = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-purple-100">Admins</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.profile_type === 'admin' && !u.isDeleted).length}</p>
+                  <p className="text-2xl font-bold">{Array.isArray(users) && users.filter(u => u.profile_type === 'admin' && !u.isDeleted).length}</p>
                 </div>
                 <ShieldCheck className="w-8 h-8 text-purple-200" />
               </div>
@@ -341,7 +291,7 @@ const User = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-red-100">Deleted Users</p>
-                  <p className="text-2xl font-bold">{users.filter(u => u.isDeleted).length}</p>
+                  <p className="text-2xl font-bold">{Array.isArray(users) && users.filter(u => u.isDeleted).length}</p>
                 </div>
                 <Trash2 className="w-8 h-8 text-red-200" />
               </div>
@@ -560,7 +510,7 @@ const User = () => {
                     <p>No users found</p>
                   </div>
                 ) : (
-                  filteredUsers.map((user) => (
+                  Array.isArray(filteredUsers) && filteredUsers.map((user) => (
                     <Card key={user._id} className={`hover:shadow-md transition-shadow ${user.isDeleted ? 'opacity-60' : ''}`}>
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">

@@ -51,11 +51,11 @@ export default function Signup() {
 
   return (
     <>
-    <div className="  bg-slate-50  dark:bg-transparent">
-      <div className="text-center py-3 ">
-        <h4 className="text-xl text-center font-bold">Signup Form</h4>
+    <div className="bg-slate-100 dark:bg-transparent h-screen">
+      <div className="text-center ">
+        <h4 className="text-xl text-center font-bold pt-20">Signup Form</h4>
       </div>
-      <div className="max-w-md mx-auto p-6 border rounded-xl shadow bg-white">
+      <div className="max-w-md mx-auto p-6 border rounded-xl shadow bg-white my-10">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
